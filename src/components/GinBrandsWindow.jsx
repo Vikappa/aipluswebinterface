@@ -135,9 +135,9 @@ const GinBrandsWindow = () => {
                     })}
 
                     
-                    <button className='full-width d-flex align-items-center justify-content-between ' onClick={openModal} >
-                         <p className='m-1'>Aggiungi brand</p>
-                         <i className="bi bi-plus-circle m-2 fs-4"></i>
+                    <button className='full-width d-flex align-items-center justify-content-between btn-outline-primary rounded-3 border-primary border-3' onClick={openModal} >
+                         <p className='m-1 text-primary'>Aggiungi brand</p>
+                         <i className="bi bi-plus-circle m-2 fs-4 text-primary"></i>
                     </button>
 
                 </div>
