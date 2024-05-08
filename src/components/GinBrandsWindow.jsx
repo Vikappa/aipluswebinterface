@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
-import { Accordion, Card } from "react-bootstrap";
-import Spinner1 from "./Spinner1";
-import AddBrandModal from "./AddBrandModal";
+import { useState, useEffect } from 'react';
+import AddBrandModal from './AddBrandModal';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+
+import Spinner1 from './Spinner1';
 
 const GinBrandsWindow = () => {
-    const [sessionToken] = useState(sessionStorage.getItem("token") || null);
+    const [sessionToken] = useState(sessionStorage.getItem('token') || null);
     const [isLoading, setIsLoading] = useState(true);
     const [ginBrands, setGinBrands] = useState([]);
     const [showModal, setShowModal] = useState(false);
-
 
     const fetchGinBrands = async () => {
         try {
@@ -16,8 +17,8 @@ const GinBrandsWindow = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionToken
-                }
+                    'Authorization': 'Bearer ' + sessionToken,
+                },
             });
 
             if (response.ok) {
@@ -34,22 +35,15 @@ const GinBrandsWindow = () => {
     };
 
     const addNewBrand = async ({ name, description, imageUrl, sovrapprezzo }) => {
-        let response;
         try {
-
-                response = await fetch('http://localhost:3001/ginbrand', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + sessionToken
-                    },
-                    body: JSON.stringify({
-                        name,
-                        description,
-                        imageUrl,
-                        sovrapprezzo
-                    })
-                })
+            const response = await fetch('http://localhost:3001/ginbrand', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + sessionToken,
+                },
+                body: JSON.stringify({ name, description, imageUrl, sovrapprezzo }),
+            });
 
             if (response && response.ok) {
                 fetchGinBrands(); 
@@ -61,24 +55,24 @@ const GinBrandsWindow = () => {
         }
     };
 
-    const addNewBrandWithImg = async function ({name, description, image, surcharge}) {
+    const addNewBrandWithImg = async function ({ name, description, image, surcharge }) {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
         formData.append('sovrapprezzo', surcharge);
-        formData.append('imageFile', image); 
-    
+        formData.append('imageFile', image);
+
         try {
             const response = await fetch('http://localhost:3001/ginbrand/uploadimage', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + sessionToken
+                    'Authorization': 'Bearer ' + sessionToken,
                 },
-                body: formData 
+                body: formData,
             });
-    
+
             if (response && response.ok) {
-                fetchGinBrands(); 
+                fetchGinBrands();
             } else {
                 console.error('Failed to add gin brand:', response.statusText);
             }
@@ -86,7 +80,7 @@ const GinBrandsWindow = () => {
             console.error('An error occurred:', error);
         }
     };
-    
+
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
 
@@ -96,44 +90,58 @@ const GinBrandsWindow = () => {
         }
     }, [sessionToken]);
 
-    const GinBrandsSection = () => (
-        <>
+    return (
+        <div className="container-fluid">
+            <h5>Brands Gin Registrati</h5>
             {isLoading ? (
                 <Spinner1 />
             ) : (
-                <div style={{ width: '100%' }}>
-                    <h5>Registered Gin Brands</h5>
-                    <Accordion >
-                        {ginBrands.map((brand, index) => (
-                            <Accordion.Item eventKey={index.toString()} key={index}>
-                                <Accordion.Header><img height="28px" src={brand.imageUrl} />{brand.name}</Accordion.Header>
-                                <Accordion.Body>
-                                    <div className="d-flex">
-                                        <div className="ms-3">
-                                            <p>Descrizione: {brand.description}</p>
-                                            <p>Sovrapprezzo: {brand.sovrapprezzo}</p>
-                                        </div>
+                <div className="accordion w-100" id="ginBrandsAccordion">
+                    {ginBrands.map((brand, index) => {
+                        const idHeading = `heading-${index}`;
+                        const idCollapse = `collapse-${index}`;
+                        return (
+                            <div className="accordion-item" key={index}>
+                                <h2 className="accordion-header" id={idHeading}>
+                                    <button
+                                        className="accordion-button"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target={`#${idCollapse}`}
+                                        aria-expanded="true"
+                                        aria-controls={idCollapse}
+                                    >
+                                        <img
+                                            height="28px"
+                                            src={brand.imageUrl}
+                                            alt="brand"
+                                        />{' '}
+                                        {brand.name}
+                                    </button>
+                                </h2>
+                                <div
+                                    id={idCollapse}
+                                    className="accordion-collapse collapse"
+                                    aria-labelledby={idHeading}
+                                    data-bs-parent="#ginBrandsAccordion"
+                                >
+                                    <div className="accordion-body">
+                                        <p>Descrizione: {brand.description}</p>
+                                        <p>Sovrapprezzo: {brand.sovrapprezzo}</p>
                                     </div>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        ))}
-                        <Card>
-                            <Card.Header>
-                                <div className="d-flex align-items-baseline justify-content-between">
-                                    <p className="mb-1">Aggiungi Brand</p>
-                                <i onClick={openModal} className="bi bi-plus-square-fill" style={{color:"skyblue"}}></i>
                                 </div>
-                            </Card.Header>
-                        </Card>
-                    </Accordion>
+                            </div>
+                        );
+                    })}
+
+                    
+                    <button className='full-width d-flex align-items-center justify-content-between ' onClick={openModal} >
+                         <p className='m-1'>Aggiungi brand</p>
+                         <i className="bi bi-plus-circle m-2 fs-4"></i>
+                    </button>
+
                 </div>
             )}
-        </>
-    );
-
-    return (
-        <div>
-            {sessionToken ? <GinBrandsSection /> : <h1>Error, please log in again</h1>}
             <AddBrandModal
                 show={showModal}
                 onHide={closeModal}
