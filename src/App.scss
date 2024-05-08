@@ -1,0 +1,13 @@
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+
+$custom-colors: (
+  "EpicodeTemaColore1" : #881B80,
+  "EpicodeTemaColore2" : #440D40,
+  "EpicodeTemaColore3" : #17192B,
+  "EpicodeTemaColore4" :#0F101C,
+  "EpicodeTemaColore5" :#412E61, 
+);
+
+$theme-colors: map-merge($theme-colors, $custom-colors);
+@import '~bootstrap/scss/bootstrap';
