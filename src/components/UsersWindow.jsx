@@ -6,6 +6,9 @@ const UsersWindows = function () {
     const [users, setUsers] = useState([]);
     const [sessionToken] = useState(sessionStorage.getItem("token") || null);
 
+    const handleShow = () => setShowModal(true);
+
+
     const fetchUsers = async () => {
         try {
             const response = await fetch('http://localhost:3001/users/getall', {
@@ -32,7 +35,6 @@ const UsersWindows = function () {
     useEffect(() => {
         fetchUsers();
     }, []);
-
     return (
         <>
             <h5>Tabella utenti e diritti</h5>
@@ -49,21 +51,31 @@ const UsersWindows = function () {
                     <tbody>
                         {isLoading ? (
                             <tr>
-                                <td colSpan="5">Caricamento...</td>
+                                <td colSpan="4">Caricamento...</td>
                             </tr>
                         ) : users.length === 0 ? (
                             <tr>
-                                <td colSpan="5">Nessun utente trovato</td>
+                                <td colSpan="4">Nessun utente trovato</td>
                             </tr>
                         ) : (
-                            users.map((user, index) => (
-                                <tr key={index}>
-                                    <td>{user.name}</td>
-                                    <td>{user.surname}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.role}</td>
+                            <>
+                                {users.map((user, index) => (
+                                    <tr key={index}>
+                                        <td>{user.name}</td>
+                                        <td>{user.surname}</td>
+                                        <td>{user.email}</td>
+                                        <td>{user.role}</td>
+                                    </tr>
+                                ))}
+                                <tr>
+                                    <td colSpan="4" style={{ textAlign: "center" }}>
+                                    <button className='full-width d-flex align-items-center justify-content-between btn-outline-primary rounded-3 border-primary border-3' onClick={handleShow} >
+                                    <p className='m-1 text-primary'>Registra utente</p>
+                                    <i className="bi bi-plus-circle m-2 fs-4 text-primary"></i>
+                                    </button>
+                                    </td>
                                 </tr>
-                            ))
+                            </>
                         )}
                     </tbody>
                 </table>
