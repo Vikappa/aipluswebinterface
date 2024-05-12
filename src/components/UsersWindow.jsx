@@ -35,6 +35,7 @@ const UsersWindows = function () {
     useEffect(() => {
         fetchUsers();
     }, []);
+    
     return (
         <>
             <h5>Tabella utenti e diritti</h5>

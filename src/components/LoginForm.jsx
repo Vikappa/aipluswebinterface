@@ -8,6 +8,8 @@ const LoginForm = function () {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    
+
     const fetchLogin = async () => {
         try {
             const response = await fetch('http://localhost:3001/login', {
@@ -26,9 +28,8 @@ const LoginForm = function () {
                 return;
             }
 
-            const data = await response.json();
-            console.log(data)
-
+            const data = await response.json()
+            
             sessionStorage.setItem("token", data.accessToken);
             if(data.role === "ADMIN"){
                 navigate('/admin');

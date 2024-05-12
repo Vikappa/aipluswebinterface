@@ -1,5 +1,4 @@
 import GinBottleStock from "./magazzino/GinBottleStock";
-import FullMagazzino from './magazzino/FullMagazzino'
 
 const Magazzino = function () {
     return (

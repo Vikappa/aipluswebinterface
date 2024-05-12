@@ -1,3 +1,31 @@
 .full-width {
     width: 100%;
 }
+
+.gin-bottles-container {
+    margin: 20px;
+}
+
+.gin-bottles-title {
+    text-align: center;
+    color: #00458B;
+}
+
+.gin-bottles-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.gin-bottles-table th {
+    background: #00458B;
+    color: white;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+}
+
+.gin-bottles-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}

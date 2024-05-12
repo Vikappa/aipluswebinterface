@@ -4,6 +4,7 @@ import AdminPage from './components/AdminPage'
 import LoginForm from './components/LoginForm'
 import WorkerPanel from './components/WorkerPanel'
 import './App.css'
+import CaricoWindow from './components/magazzino/CaricoWindow'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Routes>
       <Route path='/' element={<LoginForm/>} />
       <Route path='/admin' element={<AdminPage/>} />
+      <Route path='/admin/carico' element={<CaricoWindow/>} />
       <Route path='/workerpanel' element={<WorkerPanel/>} />
       </Routes>
     </div>
