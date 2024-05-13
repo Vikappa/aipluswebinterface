@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch  } from "react-redux";
-import { setCaricoType, setCaricoNote } from "../../redux/reducers/newCaricoReducer";
+import { setCaricoType, setCaricoNote, setOperatore } from "../../redux/reducers/newCaricoReducer";
 import { fetchGinBrands } from '../../redux/reducers/ginBrandsReducer'
 import { fetchGinFlavours } from "../../redux/reducers/ginFlavourReducer";
 import RowGinBottleCarico from "./subcomponents/RowGinBottleCarico";
@@ -8,14 +8,13 @@ import RowGuarnizioneCarico from "./subcomponents/RowGuarnizioneCarico";
 import RowTonicaBottleCarico from "./subcomponents/RowTonicaBottleCarico";
 import RowDeperibileCarico from "./subcomponents/RowDeperibileCarico";
 import { setNewItemCaricoType } from "../../redux/reducers/newItemCaricoReducer";
-import { Spinner } from "react-bootstrap";
 
 
 const CaricoWindow = function() {
 
-    const [user, setUser] = useState([]);
+    const user = useSelector(state => state.newCarico.carico.operatore)
     let newItemType = useSelector(state => state.newItemCarico.newItem.tipo);
-    const [itemsList, setItemsList] = useState([]);
+    const itemsList = useSelector(state => state.newCarico.carico.data);
     const dataDiOggi = new Date();
     const dispatch = useDispatch();
     let note = useSelector(state => state.newCarico.carico.note)
@@ -61,7 +60,7 @@ const CaricoWindow = function() {
             })
             if(response.ok){
                 const data = await response.json()
-                console.log(data)
+
                 setNCarico(data)
             }
         } catch (error) {
@@ -69,6 +68,7 @@ const CaricoWindow = function() {
         }
 
     }
+
     const fetchUser = async () => {
         fetchNCarico()
         dispatch(fetchGinBrands())
@@ -83,7 +83,8 @@ const CaricoWindow = function() {
             })
             if(response.ok){
                 const data = await response.json()
-                setUser(data)
+                console.log(data)
+                dispatch(setOperatore(data))
             }
         }
             catch (error) {
@@ -150,7 +151,6 @@ const CaricoWindow = function() {
             }
 
             <div className="d-flex">
-
 
         <textarea 
                 className="form-control" 

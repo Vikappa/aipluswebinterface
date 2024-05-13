@@ -2,9 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     carico: {
-        id: 0,
+        operatore: null,
         data: [],
-        quantita: 0,
         note: ""
     }
 }
@@ -17,7 +16,9 @@ const newCaricoReducer = createSlice({
             console.log(action.payload)
             state.carico = action.payload;
         },
-
+        setOperatore(state,action){
+            state.carico.operatore = action.payload;
+        },
         setCaricoNote(state, action) {
             state.carico.note = action.payload;
         },
@@ -28,6 +29,6 @@ const newCaricoReducer = createSlice({
     }
 })
 
-export const { setCarico, setCaricoType, setCaricoNote } = newCaricoReducer.actions;
+export const { setCarico, setCaricoType, setCaricoNote, setOperatore } = newCaricoReducer.actions;
 
 export default newCaricoReducer.reducer;
