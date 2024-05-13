@@ -8,6 +8,7 @@ import RowGuarnizioneCarico from "./subcomponents/RowGuarnizioneCarico";
 import RowTonicaBottleCarico from "./subcomponents/RowTonicaBottleCarico";
 import RowDeperibileCarico from "./subcomponents/RowDeperibileCarico";
 import { setNewItemCaricoType } from "../../redux/reducers/newItemCaricoReducer";
+import { Spinner } from "react-bootstrap";
 
 
 const CaricoWindow = function() {
@@ -18,6 +19,7 @@ const CaricoWindow = function() {
     const dataDiOggi = new Date();
     const dispatch = useDispatch();
     let note = useSelector(state => state.newCarico.carico.note)
+    const [nCarico, setNCarico] = useState(null);
     
 
     const handleSelectChange = (e) => {
@@ -48,8 +50,27 @@ const CaricoWindow = function() {
         dispatch(setCaricoNote(noteValue));
     }
 
+    const fetchNCarico = async () => {
+        try{
+            const response = await fetch('http://localhost:3001/carichi/getlastcarico', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+ sessionStorage.getItem("token")
+                }
+            })
+            if(response.ok){
+                const data = await response.json()
+                console.log(data)
+                setNCarico(data)
+            }
+        } catch (error) {
+            console.error('Errore fetch numero carico', error);
+        }
 
+    }
     const fetchUser = async () => {
+        fetchNCarico()
         dispatch(fetchGinBrands())
         dispatch(fetchGinFlavours())
         try {
@@ -83,8 +104,8 @@ const CaricoWindow = function() {
         <div style={{ display: 'flex', justifyContent: 'center' }} className="full-width px-1" >
             <form style={{ display: 'flex', width: '100%', flexWrap: 'wrap', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
-                    <label htmlFor="inputncarico" style={{ marginRight: '10px' }}>N° carico:</label>
-                    <input type="text" name="inputncarico" id="inputncarico" className="form-control" value={user?"Si":"..."} readOnly/>
+                    <label htmlFor="inputncarico" style={{ marginRight: '10px' }}>N° Carico:</label>
+                    <input type="text" name="inputncarico" id="inputncarico" className="form-control" value={nCarico+1} readOnly/>
                 </div>
                 
                 <div style={{ display: 'flex', alignItems: 'center', flex: '1', marginRight: '20px' }}>
