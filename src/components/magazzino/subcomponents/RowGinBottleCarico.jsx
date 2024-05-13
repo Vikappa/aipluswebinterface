@@ -1,4 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useRef } from 'react'
+import Modal from 'react-bootstrap/Modal';
+
 import {
     setNewItemCaricoType,
     setGinBrand,
@@ -7,26 +10,29 @@ import {
     setVolume,
     setAnno,
     setDataScadenza, 
-    setImmagine,
     resetNewItem,
     setBatchNumber, 
-    setFlavour
+    setFlavour,
+    setImageUrl,
 } from "/src/redux/reducers/newItemCaricoReducer";
 
 import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
 
 const RowGinBottleCarico = function() {
     const dispatch = useDispatch();
-    const newItem = useSelector(state => state.newCarico.newItem);
     const ginBrands = useSelector(state => state.ginBrands.ginbrands);
     const ginFlavours = useSelector(state => state.ginFlavours.ginFlavours);
+    const ginImage = useSelector(state => state.newItemCarico.newItem.immagine)
 
-    const [localItem, setLocalItem] = useState({...newItem});
+    const [localItem, setLocalItem] = useState({})
+    const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        setLocalItem({...newItem});
-    }, [newItem]);
-
+    const handleChangeUrl = (e) => {
+        const { value } = e.target;
+        setLocalItem(prev => ({ ...prev, imageUrl: value }));
+    }
+    
     const handleChangeTipo = (e) => {
         const { value } = e.target;
         setLocalItem(prev => ({ ...prev, tipo: value }));
@@ -45,6 +51,34 @@ const RowGinBottleCarico = function() {
         dispatch(setNome(value));
     }
 
+    const handleAddImageFile = function(e){
+        e.preventDefault();
+        handleCloseModalAggiungiImmane()
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 5242880) {
+            alert("Immagine troppo pesante. Massimo peso previsto 5MB.");
+            return;
+        }
+
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => {
+            if (img.width > 500 || img.height > 500) {
+                alert("Dimensione massima immagine 500x500px");
+                URL.revokeObjectURL(img.src); 
+            } else {
+                setLocalItem(prev => ({ ...prev, immagine: file }));
+                console.log("Immagine caricata:", file);
+            }
+        };
+    }
+
+    const handleAddImageUrl = function(){
+        dispatch(setImageUrl(localItem.imageUrl));
+        handleCloseModalAggiungiImmane()
+    }
 
     const handleChangeQuantita = (e) => {
         const { value } = e.target;
@@ -80,6 +114,10 @@ const RowGinBottleCarico = function() {
         setLocalItem(prev => ({ ...prev, ginBrand: value }));
         dispatch(setGinBrand(value.ginBrand)); 
     }
+
+    const handleCloseModalAggiungiImmane = function(){
+        setShowModaleImmage(false);
+    }
     
     const handleChangeGinFlavour = (e) => {
         const { value } = e.target;
@@ -91,7 +129,6 @@ const RowGinBottleCarico = function() {
     const [showModaleImmagine, setShowModaleImmage] = useState(false);
 
     const insertProduct = () => {
-        console.log(newItem);
         console.log(localItem);
 
         if(!localItem.ginBrand){
@@ -102,18 +139,8 @@ const RowGinBottleCarico = function() {
             localItem.flavour = ginFlavours[0]
         }
 
-        const itemToAdd = {
-            name:localItem.name,
-            um: "ml",
-            brandId:localItem.brandId,
-            productionDate:localItem.anno,
-            volume:localItem.volume,
-            alcoholPercentage:localItem.alcoholPercentage,
-            expirationDate:localItem.data_scadenza,
-            batchNumber: localItem.batchNumber
-        }
-
         console.log(localItem)
+
         dispatch(resetNewItem())
     }
 
@@ -122,6 +149,7 @@ const RowGinBottleCarico = function() {
     }, [localItem])
 
     return (
+        <>
         <div className="d-flex">
 
             <select id="tipoProdotto" className="form-control" value={localItem.tipo} style={{flex:1}} onChange={handleChangeTipo}>
@@ -153,9 +181,9 @@ const RowGinBottleCarico = function() {
                             <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
                         )
                     }   
-                    )
+                )
                 
-                }
+            }
             </select>
             
             </div>
@@ -168,16 +196,59 @@ const RowGinBottleCarico = function() {
             <input type="text" id="batchNumberinput" className="form-control" placeholder="N° lotto" value={localItem.batchNumber || ''} onChange={handleChangeBatchNumber} ></input>
             </div>
             </div>
-            
-            <button className="btn btn-primary m-2 my-3" onClick={handleImageUpload}>Immagine</button>
+                
+                <button className="btn btn-primary m-2 my-3" onClick={handleImageUpload}>
+                    {ginImage === undefined?"Carica immagine": "Modifica immagine"}
+                </button>
+
             <button className="btn btn-success m-2 my-3" onClick={insertProduct}>Ok</button>
 
-            {showModaleImmagine && (
-                <div className="modal">
-                    <button onClick={() => setShowModaleImmage(false)}>Close</button>
-                </div>
-            )}
         </div>
+
+{/* modal */}
+<Modal show={showModaleImmagine} onHide={handleCloseModalAggiungiImmane}>
+    <Modal.Header closeButton>
+        <Modal.Title>Inserisci immagine</Modal.Title>
+    </Modal.Header>
+    <Modal.Body className="container-fluid">
+        <div className="mb-3">
+            <label htmlFor="file-upload" className="form-label">Carica immagine</label>
+            <button className="btn btn-outline-primary w-100" onClick={() => fileInputRef.current.click()}>
+                Seleziona File
+            </button>
+            <input 
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleAddImageFile}
+                style={{ display: 'none' }}
+                id="file-upload"
+            />
+        </div>
+        <div className="mb-3">
+            <label htmlFor="url" className="form-label">Inserisci URL</label>
+            <div className="input-group">
+            <input 
+            type="text" 
+            id="url" 
+            className="form-control" 
+            placeholder="https://url-tua-immagine.png" 
+            value={localItem.imageUrl || ''}  
+            onChange={handleChangeUrl}
+/>
+                <Button variant="outline-primary" onClick={handleAddImageUrl}>Ok</Button>
+            </div>
+        </div>            
+    </Modal.Body>
+    <Modal.Footer>
+        <Button variant="secondary" onClick={handleCloseModalAggiungiImmane}>
+            Annulla
+        </Button>
+    </Modal.Footer>
+</Modal>
+
+
+    </>
     );
 };
 

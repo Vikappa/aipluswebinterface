@@ -57,6 +57,9 @@ const newItemCaricoReducer = createSlice({
         },
         setFlavour(state, action) {
             state.newItem.flavour = action.payload;
+        },
+        setImageUrl(state, action) {
+            state.newItem.imageUrl = action.payload;
         }
     }
 });
@@ -74,7 +77,8 @@ export const {
     setImmagine,
     resetNewItem,
     setBatchNumber,
-    setFlavour
+    setFlavour,
+    setImageUrl
 } = newItemCaricoReducer.actions;
 
 export default newItemCaricoReducer.reducer;
