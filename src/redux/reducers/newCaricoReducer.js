@@ -22,13 +22,32 @@ const newCaricoReducer = createSlice({
         setCaricoNote(state, action) {
             state.carico.note = action.payload;
         },
-        setQuantitaItemCarico(state, action) {
-            state.newItem.quantita = action.payload === '' ? 0 : Number(action.payload);
+        pushGinBottleToCarico(state, action){
+            let payload = action.payload
+            let newData = [...state.carico.data]
+            let newItem = {
+                discriminatorString: "GIN_BOTTLE",
+                name: payload.nome,
+                UM: "ml",
+                brandId: payload.ginBrand,
+                productionDate: payload.anno,
+                volume: payload.volume,
+                alcoholPercentage: payload.alcoholPercentage,
+                expirationDate: payload.data_scadenza,
+                batchNumber: payload.batchNumber,
+                imageUrl: payload.imageUrl,
+                ginFlavourId: payload.flavour
+            }
+            for (let index = 0; index < action.payload.quantita; index++) {
+                newData.push(action.payload)
+            }
+
+            state.carico.data = [...newData]
         }
         
     }
 })
 
-export const { setCarico, setCaricoType, setCaricoNote, setOperatore } = newCaricoReducer.actions;
+export const { setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico } = newCaricoReducer.actions;
 
 export default newCaricoReducer.reducer;

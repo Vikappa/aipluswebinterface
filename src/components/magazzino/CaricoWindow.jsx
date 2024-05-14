@@ -83,7 +83,6 @@ const CaricoWindow = function() {
             })
             if(response.ok){
                 const data = await response.json()
-                console.log(data)
                 dispatch(setOperatore(data))
             }
         }

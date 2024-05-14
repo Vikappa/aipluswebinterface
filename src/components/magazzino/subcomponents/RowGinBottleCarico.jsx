@@ -14,93 +14,107 @@ import {
     setBatchNumber, 
     setFlavour,
     setImageUrl,
+    deleteImageFile,
+    resetImageUrl,
+    setAlcPercentage
 } from "/src/redux/reducers/newItemCaricoReducer";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "react-bootstrap";
+import { pushGinBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
 
 const RowGinBottleCarico = function() {
     const dispatch = useDispatch();
     const ginBrands = useSelector(state => state.ginBrands.ginbrands);
-    const ginFlavours = useSelector(state => state.ginFlavours.ginFlavours);
-    const ginImage = useSelector(state => state.newItemCarico.newItem.immagine)
+    const ginFlavours = useSelector(state => state.ginFlavours.ginFlavours) //ALL FLAVOURS IN DB
+    const localItem = useSelector(state => state.newItemCarico.newItem)
+    
 
-    const [localItem, setLocalItem] = useState({})
     const fileInputRef = useRef(null);
 
     const handleChangeUrl = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, imageUrl: value }));
+        dispatch(setImageUrl(value))
     }
     
     const handleChangeTipo = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, tipo: value }));
         dispatch(setNewItemCaricoType(value));
     }
 
     const handleChangeBatchNumber = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, batchNumber: value }));
         dispatch(setBatchNumber(value));
     }
 
     const handleChangeNome = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, nome: value }));
         dispatch(setNome(value));
     }
 
-    const handleAddImageFile = function(e){
+    const handleAddImageFile = async (e) => {
         e.preventDefault();
-        handleCloseModalAggiungiImmane()
+        handleCloseModalAggiungiImmane();
         const file = e.target.files[0];
         if (!file) return;
-
+    
         if (file.size > 5242880) {
             alert("Immagine troppo pesante. Massimo peso previsto 5MB.");
             return;
         }
-
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = () => {
-            if (img.width > 500 || img.height > 500) {
-                alert("Dimensione massima immagine 500x500px");
-                URL.revokeObjectURL(img.src); 
-            } else {
-                setLocalItem(prev => ({ ...prev, immagine: file }));
-                console.log("Immagine caricata:", file);
+    
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        const token = sessionStorage.getItem('token');
+    
+        try {
+            const response = await fetch('http://localhost:3001/uploadimg', { 
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+    
+            if (!response.ok) {
+                throw new Error('Errore durante il caricamento del file');
             }
-        };
+    
+            const data = await response.json();
+            console.log(data);
+            const imgURL = data.url;  
+    
+            dispatch(setImageUrl(imgURL));
+        } catch (error) {
+            console.error('Errore:', error);
+        }
     }
+    
+    
 
     const handleAddImageUrl = function(){
-        dispatch(setImageUrl(localItem.imageUrl));
+        dispatch(deleteImageFile())
         handleCloseModalAggiungiImmane()
     }
 
     const handleChangeQuantita = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, quantita: value === '' ? null : Number(value) }));
         dispatch(setQuantita(value === '' ? null : Number(value)));
     }
 
     const handleChangeVolume = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, volume: value === '' ? null : Number(value) }));
         dispatch(setVolume(value === '' ? null : Number(value)));
     }
 
     const handleChangeAnno = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, anno: value }));
         dispatch(setAnno(value));
     }
 
     const handleChangeDataScadenza = (e) => {
         const { value } = e.target;
-        setLocalItem(prev => ({ ...prev, data_scadenza: value }));
         dispatch(setDataScadenza(value));
     }
 
@@ -110,43 +124,46 @@ const RowGinBottleCarico = function() {
 
     const handleChangeGinBrand = (e) => {
         const { value } = e.target;
-        console.log(value.ginBrand)
-        setLocalItem(prev => ({ ...prev, ginBrand: value }));
-        dispatch(setGinBrand(value.ginBrand)); 
+        dispatch(setGinBrand(value)); 
     }
 
     const handleCloseModalAggiungiImmane = function(){
         setShowModaleImmage(false);
     }
+
+    const handleAnnulla = function(){
+        dispatch(resetImageUrl());
+        dispatch(deleteImageFile())
+    }
     
     const handleChangeGinFlavour = (e) => {
         const { value } = e.target;
-        console.log(value)
-        setLocalItem(prev => ({ ...prev, flavour: value }));
         dispatch(setFlavour(value));
+    }
+
+    const handleChangeAlcPercentage = (e) => {
+        const { value } = e.target
+        dispatch(setAlcPercentage(value))
     }
     
     const [showModaleImmagine, setShowModaleImmage] = useState(false);
 
     const insertProduct = () => {
-        console.log(localItem);
 
         if(!localItem.ginBrand){
-            localItem.brand = ginBrands[0]
+            dispatch(setGinBrand(ginBrands[0]))
         }
 
         if(!localItem.flavour){
-            localItem.flavour = ginFlavours[0]
+            dispatch(setGinBrand(ginFlavours[0]))
         }
 
-        console.log(localItem)
 
+        dispatch(pushGinBottleToCarico(localItem))
         dispatch(resetNewItem())
     }
 
-    useEffect(() => {
-        console.log(localItem)
-    }, [localItem])
+
 
     return (
         <>
@@ -173,7 +190,7 @@ const RowGinBottleCarico = function() {
             <input type="text" id="ginName" placeholder="Nome Gin" className="form-control" value={localItem.nome || ''} onChange={handleChangeNome} />
             
             <input type="number" id="volume" placeholder="Volume (ml)" className="form-control" value={localItem.volume || ''} onChange={handleChangeVolume} />
-            
+            <input type="number" id="alcPerc" placeholder="% alcol" className="form-control" value={localItem.alcPercentage || ''} onChange={handleChangeAlcPercentage} />
             <select id="ginFlavourSelect" value={localItem.flavour} className="form-control" onChange={handleChangeGinFlavour} >
                 {
                     ginFlavours && ginFlavours.map((flavour) => {
@@ -198,7 +215,7 @@ const RowGinBottleCarico = function() {
             </div>
                 
                 <button className="btn btn-primary m-2 my-3" onClick={handleImageUpload}>
-                    {ginImage === undefined?"Carica immagine": "Modifica immagine"}
+                    {localItem.imageUrl === undefined && localItem.immagine === undefined?"Carica immagine": "Modifica immagine"}
                 </button>
 
             <button className="btn btn-success m-2 my-3" onClick={insertProduct}>Ok</button>
@@ -206,8 +223,8 @@ const RowGinBottleCarico = function() {
         </div>
 
 {/* modal */}
-<Modal show={showModaleImmagine} onHide={handleCloseModalAggiungiImmane}>
-    <Modal.Header closeButton>
+<Modal show={showModaleImmagine}>
+    <Modal.Header>
         <Modal.Title>Inserisci immagine</Modal.Title>
     </Modal.Header>
     <Modal.Body className="container-fluid">
@@ -241,7 +258,7 @@ const RowGinBottleCarico = function() {
         </div>            
     </Modal.Body>
     <Modal.Footer>
-        <Button variant="secondary" onClick={handleCloseModalAggiungiImmane}>
+        <Button variant="secondary" onClick={handleAnnulla}>
             Annulla
         </Button>
     </Modal.Footer>

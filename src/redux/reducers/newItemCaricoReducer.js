@@ -8,9 +8,9 @@ const initialNewItem = {
     volume: 0,
     anno: "",
     data_scadenza: null,
-    immagine: "",
     flavour: "",
-    batchNumber:""
+    batchNumber:"",
+    alcPercentage:0
 };
 
 const initialState = {
@@ -47,6 +47,7 @@ const newItemCaricoReducer = createSlice({
             state.newItem.data_scadenza = action.payload;
         },
         setImmagine(state, action) {
+            state.newItem.imageUrl = null;
             state.newItem.immagine = action.payload;
         },
         resetNewItem(state) {
@@ -60,6 +61,15 @@ const newItemCaricoReducer = createSlice({
         },
         setImageUrl(state, action) {
             state.newItem.imageUrl = action.payload;
+        },
+        deleteImageFile(state){
+            state.newItem.immagine = null;
+        },
+        resetImageUrl(state){
+            state.newItem.imageUrl = null;
+        },
+        setAlcPercentage(state, action){  // Modificato da 'setalcPercentage' a 'setAlcPercentage'
+            state.newItem.alcPercentage = action.payload;
         }
     }
 });
@@ -78,7 +88,10 @@ export const {
     resetNewItem,
     setBatchNumber,
     setFlavour,
-    setImageUrl
+    setImageUrl,
+    deleteImageFile,
+    resetImageUrl,
+    setAlcPercentage
 } = newItemCaricoReducer.actions;
 
 export default newItemCaricoReducer.reducer;
