@@ -22,9 +22,10 @@ const newCaricoReducer = createSlice({
         setCaricoNote(state, action) {
             state.carico.note = action.payload;
         },
-        pushGinBottleToCarico(state, action){
-            let payload = action.payload
-            let newData = [...state.carico.data]
+        pushGinBottleToCarico(state, action) => {
+            let payload = action.payload;
+        
+            let newData = [...state.carico.data];
             let newItem = {
                 discriminatorString: "GIN_BOTTLE",
                 name: payload.nome,
@@ -37,14 +38,15 @@ const newCaricoReducer = createSlice({
                 batchNumber: payload.batchNumber,
                 imageUrl: payload.imageUrl,
                 ginFlavourId: payload.flavour
-            }
-            for (let index = 0; index < action.payload.quantita; index++) {
-                newData.push(action.payload)
-            }
-
-            state.carico.data = [...newData]
-        }
+            };
         
+        
+            for (let index = 0; index < payload.quantita; index++) {
+                newData.push(newItem);
+            }
+        
+            state.carico.data = newData;
+        }
     }
 })
 

@@ -2,13 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialNewItem = {
     tipo: "Seleziona tipo prodotto",
-    ginBrand: "",
     nome: "",
     quantita: 0,
     volume: 0,
     anno: "",
     data_scadenza: null,
-    flavour: "",
     batchNumber:"",
     alcPercentage:0
 };
@@ -68,7 +66,7 @@ const newItemCaricoReducer = createSlice({
         resetImageUrl(state){
             state.newItem.imageUrl = null;
         },
-        setAlcPercentage(state, action){  // Modificato da 'setalcPercentage' a 'setAlcPercentage'
+        setAlcPercentage(state, action){ 
             state.newItem.alcPercentage = action.payload;
         }
     }

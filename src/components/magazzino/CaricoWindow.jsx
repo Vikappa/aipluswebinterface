@@ -14,6 +14,7 @@ const CaricoWindow = function() {
 
     const user = useSelector(state => state.newCarico.carico.operatore)
     let newItemType = useSelector(state => state.newItemCarico.newItem.tipo);
+    const newItem = useSelector(state => state.newItemCarico.newItem);
     const itemsList = useSelector(state => state.newCarico.carico.data);
     const dataDiOggi = new Date();
     const dispatch = useDispatch();
@@ -95,6 +96,11 @@ const CaricoWindow = function() {
         fetchUser();
     }, [])
 
+    useEffect(() => {
+        console.log(newItem)
+    }, [newItem])
+    
+
     const formatDate = (date) => {
         return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     };
@@ -124,8 +130,8 @@ const CaricoWindow = function() {
         
         <ul className="full-width" style={{ listStyle: 'none', padding: '0' }}>
 
-            {itemsList.map((item) => (
-                <li key={item.id}>{item.name}</li>
+            {itemsList.map((item, index) => (
+                <li key={index}>{item.name}</li>
             ))}
 
 

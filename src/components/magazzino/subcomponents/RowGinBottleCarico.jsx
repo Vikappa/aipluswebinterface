@@ -82,7 +82,6 @@ const RowGinBottleCarico = function() {
             }
     
             const data = await response.json();
-            console.log(data);
             const imgURL = data.url;  
     
             dispatch(setImageUrl(imgURL));
@@ -149,19 +148,21 @@ const RowGinBottleCarico = function() {
     const [showModaleImmagine, setShowModaleImmage] = useState(false);
 
     const insertProduct = () => {
-
-        if(!localItem.ginBrand){
-            dispatch(setGinBrand(ginBrands[0]))
+        let updatedItem = { ...localItem };
+    
+        if (!updatedItem.ginBrand) {
+            updatedItem.ginBrand = ginBrands[0]?.name || '';
         }
-
-        if(!localItem.flavour){
-            dispatch(setGinBrand(ginFlavours[0]))
+    
+        if (!updatedItem.flavour) {
+            updatedItem.flavour = ginFlavours[0]?.name || '';
         }
-
-
-        dispatch(pushGinBottleToCarico(localItem))
-        dispatch(resetNewItem())
-    }
+    
+        console.log(updatedItem)
+        dispatch(pushGinBottleToCarico(updatedItem));
+        dispatch(resetNewItem());
+    };
+    
 
 
 
