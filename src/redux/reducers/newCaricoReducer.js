@@ -22,7 +22,7 @@ const newCaricoReducer = createSlice({
         setCaricoNote(state, action) {
             state.carico.note = action.payload;
         },
-        pushGinBottleToCarico(state, action) => {
+        pushGinBottleToCarico(state, action) {
             let payload = action.payload;
         
             let newData = [...state.carico.data];
