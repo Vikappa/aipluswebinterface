@@ -8,6 +8,7 @@ import RowGuarnizioneCarico from "./subcomponents/RowGuarnizioneCarico";
 import RowTonicaBottleCarico from "./subcomponents/RowTonicaBottleCarico";
 import RowDeperibileCarico from "./subcomponents/RowDeperibileCarico";
 import { setNewItemCaricoType } from "../../redux/reducers/newItemCaricoReducer";
+import { fetchTonicBrands } from "../../redux/reducers/tonicBrandReducer";
 
 
 const CaricoWindow = function() {
@@ -74,6 +75,7 @@ const CaricoWindow = function() {
         fetchNCarico()
         dispatch(fetchGinBrands())
         dispatch(fetchGinFlavours())
+        dispatch(fetchTonicBrands())
         try {
             const response = await fetch('http://localhost:3001/users/profile', {
                 method: 'GET',
