@@ -12,13 +12,13 @@ import { fetchTonicBrands } from "../../redux/reducers/tonicBrandReducer";
 import { fetchFoodShortLine, fetchGarnishShortLine } from '../../redux/reducers/wharehouseReducers'
 import { fetchFlavours } from "../../redux/reducers/flavourReducer";
 import { fetchColours } from "../../redux/reducers/colourReducer";
+import ResumeRowProdotto from './subcomponents/ResumeRowProdotto'
 
 
 const CaricoWindow = function() {
 
     const user = useSelector(state => state.newCarico.carico.operatore)
     let newItemType = useSelector(state => state.newItemCarico.newItem.tipo);
-    const newItem = useSelector(state => state.newItemCarico.newItem);
     const itemsList = useSelector(state => state.newCarico.carico.data);
     const dataDiOggi = new Date();
     const dispatch = useDispatch();
@@ -141,7 +141,7 @@ const CaricoWindow = function() {
         <ul className="full-width" style={{ listStyle: 'none', padding: '0' }}>
 
             {itemsList.map((item, index) => (
-                <li key={index}>{item.name}</li>
+                <ResumeRowProdotto item={item} key={index}/>
             ))}
 
 

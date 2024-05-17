@@ -46,10 +46,45 @@ const newCaricoReducer = createSlice({
             }
         
             state.carico.data = newData;
+        },
+        pushTonicBottleToCarico(state, action) {
+            let payload = action.payload;
+
+            let newData = [...state.carico.data];
+            let newItem = {
+                discriminatorString: "TONICA",
+                UM: "ml",
+                name: payload.nome,
+                flavourId: payload.flavour,
+                scadenza_tonica: payload.data_scadenza,
+                brand_tonica_name: payload.ginBrand
+            }
+
+            for (let index = 0; index < payload.quantita; index++) {
+                newData.push(newItem);
+            }
+
+            state.carico.data = newData;
+        }, pushExtraToCarico(state, action){
+            let payload = action.payload;
+
+            let newData = [...state.carico.data];
+            let newItem = {
+                discriminatorString: "ALIMENTO_EXTRA",
+                name: payload.deperibileName,
+                flavourId: payload.flavour,
+                scadenza_ingrediente: payload.data_scadenza,
+                UM: payload.um 
+            }
+
+            for (let index = 0; index < payload.quantita; index++) {
+                newData.push(newItem);
+            }
+            state.carico.data = newData;
         }
     }
 })
 
-export const { setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico } = newCaricoReducer.actions;
+export const { setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico,pushTonicBottleToCarico, pushExtraToCarico } = newCaricoReducer.actions;
 
 export default newCaricoReducer.reducer;

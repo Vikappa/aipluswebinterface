@@ -2,8 +2,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
-import { setNewItemCaricoType, setGinBrand, setFlavour, setNome, setQuantita, setVolume, resetNewItem } from "../../../redux/reducers/newItemCaricoReducer";
-import { pushGinBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
+import { setNewItemCaricoType, setGinBrand, setFlavour, setNome, setQuantita, resetNewItem, setDataScadenza } from "../../../redux/reducers/newItemCaricoReducer";
+import { pushTonicBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
+import { fetchTonicBrands } from "../../../redux/reducers/tonicBrandReducer";
 
 const RowTonicaBottleCarico = function() {
 
@@ -15,7 +16,10 @@ const RowTonicaBottleCarico = function() {
     const [showTonicBrandModal, setShowTonicBrandModal] = useState(false);
     const [showFlavourModal, setShowFlavourModal] = useState(false);
 
-    const [newItemName, setNewItemName] = useState("");
+    const [newFlavourName, setNewFlavourName] = useState("");
+    const [newTonicBrandName, setNewTonicBrandName] = useState("");
+    const [newTonicDescription, setNewTonicDescription] = useState("");
+
     const [previousTonicBrand, setPreviousTonicBrand] = useState(localItem.ginBrand);
 
     const handleChangeTipo = (e) => {
@@ -31,6 +35,10 @@ const RowTonicaBottleCarico = function() {
             dispatch(setGinBrand(selectedBrand));
         }
     }
+
+    const handleChangeDataScadenza = (e) => {
+        dispatch(setDataScadenza(e.target.value));
+    };
 
     const handleChangeTonicFlavour = (e) => {
         if (e.target.value === "Aggiungi") {
@@ -51,15 +59,14 @@ const RowTonicaBottleCarico = function() {
         }
     }
 
-    const handleChangeVolume = (e) => {
-        const value = e.target.value === '' ? null : Number(e.target.value);
-        if (value !== null && value >= 0) {
-            dispatch(setVolume(value));
-        }
-    }
+
 
     const handleTonicBrandModalClose = () => {
-        dispatch(setGinBrand(previousTonicBrand));
+        if(previousTonicBrand){
+            dispatch(setGinBrand(previousTonicBrand));
+        } else {
+            dispatch(setGinBrand(tonicaBrands[0].name))
+        }
         setShowTonicBrandModal(false);
     }
 
@@ -67,36 +74,41 @@ const RowTonicaBottleCarico = function() {
         setShowFlavourModal(false);
     }
 
-    const handleTonicBrandModalSubmit = () => {
-        // Aggiungi qui la logica per fare la POST al backend.
-        // Esempio di chiamata API (assicurati di sostituire l'URL con il tuo endpoint):
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
-            method: 'POST',
+    const handleTonicBrandModalSubmit = async () => {
+        const response = await fetch("http://localhost:3001/brandtonica/add", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
             },
-            body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
-
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setGinBrand(newItemName));
-        setShowTonicBrandModal(false);
-    }
+            body: JSON.stringify({
+                name: newTonicBrandName, 
+                description: newTonicDescription
+            })
+        });
+    
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            dispatch(setGinBrand(newTonicBrandName));
+            setShowTonicBrandModal(false);
+            setNewTonicBrandName("");
+            dispatch(fetchTonicBrands());
+        } else {
+            console.error("Failed to add tonic brand");
+        }
+    };
+    
 
     const handleFlavourModalSubmit = async () => {
 console.log("Prova")
-        const response = await fetch('http://localhost:3001/flavour/add', {
+        const response = await fetch('http://localhost:3001/brandtonica/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
             },
-            body: JSON.stringify({ name: newItemName }),
+            body: JSON.stringify({ name: newTonicBrandName, description: newTonicDescription }),
         })
         if(response.ok){
             const data = await response.json();
@@ -105,15 +117,15 @@ console.log("Prova")
             console.log("Error adding new flavour");
         }
 
-        dispatch(setFlavour(newItemName))
+        dispatch(setFlavour(newFlavourName))
         setShowFlavourModal(false)
     }
 
     const isFormValid = () => {
-        return localItem.tipo && localItem.ginBrand && localItem.nome && localItem.volume > 0 && localItem.quantita > 0 && localItem.flavour;
+        return localItem.tipo && localItem.nome && localItem.quantita > 0 && localItem.data_scadenza;
     };
 
-    const handleOkClick = () => {
+    const insertProduct = () => {
         let updatedItem = { ...localItem };
 
         if (!updatedItem.ginBrand) {
@@ -128,7 +140,7 @@ console.log("Prova")
             updatedItem.quantita = 1;
         }
 
-        dispatch(pushGinBottleToCarico(updatedItem));
+        dispatch(pushTonicBottleToCarico(updatedItem));
         dispatch(resetNewItem());
     };
 
@@ -153,11 +165,11 @@ console.log("Prova")
 
                 <div className="d-flex mb-2">
                     <input type="text" id="tonicName" placeholder="Nome Tonica" className="form-control me-2" value={localItem.nome || ''} onChange={handleChangeNome} />
-                    <input type="number" id="volume" placeholder="Volume (ml)" className="form-control me-2" value={localItem.volume || ''} onChange={handleChangeVolume} />
+                    <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita} />
                 </div>
 
                 <div className="d-flex mb-2">
-                    <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita} />
+                <input type="date" id="expirationDate" className="form-control me-2" value={localItem.data_scadenza || ''} onChange={handleChangeDataScadenza} />
                     <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeTonicFlavour}>
                         {flavours.map((flavour) => (
                             <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
@@ -167,7 +179,7 @@ console.log("Prova")
                 </div>
 
                 <div className="d-flex mb-2">
-                    <Button className="btn btn-success" onClick={handleOkClick} disabled={!isFormValid()}>Ok</Button>
+                    <Button className="btn btn-success" onClick={insertProduct} disabled={!isFormValid()}>Ok</Button>
                 </div>
             </div>
 
@@ -179,13 +191,13 @@ console.log("Prova")
                 <Modal.Body>
                     <form>
                         <div className="form-group">
-                            <label htmlFor="newItemName">Nome</label>
+                            <label htmlFor="newBrandName">Nome</label>
                             <input
                                 type="text"
                                 className="form-control"
-                                id="newItemName"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
+                                id="newBrandName"
+                                value={newTonicBrandName}
+                                onChange={(e) => setNewTonicBrandName(e.target.value)}
                             />
                         </div>
                     </form>
@@ -213,8 +225,8 @@ console.log("Prova")
                                 type="text"
                                 className="form-control"
                                 id="newFlavourName"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
+                                value={newFlavourName}
+                                onChange={(e) => setNewFlavourName(e.target.value)}
                             />
                         </div>
                     </form>
