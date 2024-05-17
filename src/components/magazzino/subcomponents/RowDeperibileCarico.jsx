@@ -7,6 +7,8 @@ import {
     resetNewItem
 } from "../../../redux/reducers/newItemCaricoReducer";
 import { pushExtraToCarico } from "../../../redux/reducers/newCaricoReducer";
+import { fetchGinBrands } from "../../../redux/reducers/ginBrandsReducer";
+import { fetchFlavours } from "../../../redux/reducers/flavourReducer";
 
 const RowDeperibileCarico = function() {
 
@@ -23,7 +25,7 @@ const RowDeperibileCarico = function() {
     const [newFlavourName, setNewFlavourName] = useState("");
 
     const handleChangeNewFlavourName = (e) => {
-        setNewFlavourName(e.target.value);
+        setNewFlavourName(e)
     }
 
     const handleChangeTipo = (e) => {
@@ -75,24 +77,24 @@ const RowDeperibileCarico = function() {
         setShowFlavourModal(false);
     };
 
-    const handleFlavourModalSubmit = () => {
-        // Logica per fare la POST al backend per i flavour
-        // Esempio:
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
+    const handleFlavourModalSubmit = async () => {
+
+        const response = await fetch('http://localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'authorization': 'Bearer ' + sessionStorage.getItem('token')
             },
-            body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
-
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setFlavour(newItemName));
+            body: JSON.stringify({ name: newFlavourName })
+        });
+        if (response.ok) {
+            const newFlavour = await response.json();
+            dispatch(fetchFlavours())
+            dispatch(setFlavour(newFlavour.name));
+            setNewFlavourName("");
+        } else {
+            console.error('Error adding new flavour:', response.status);
+        }
         setShowFlavourModal(false);
     };
 
@@ -184,7 +186,7 @@ const RowDeperibileCarico = function() {
                                 className="form-control"
                                 id="newFlavourName"
                                 value={newFlavourName}
-                                onChange={(e) => handleChangeNewFlavourName(e.target.value)}
+                                onInput={(e) => handleChangeNewFlavourName(e.target.value)}
                             />
                         </div>
                     </form>
