@@ -5,7 +5,7 @@ const initialState = {
 }
 
 export const fetchTonicBrands = createAsyncThunk(
-    "ginbrand/getall",
+    "tonicBrands/fetchTonicBrands",
     async () => {
         const token = sessionStorage.getItem("token"); 
         const response = await fetch("http://localhost:3001/brandtonica/getall", {
@@ -16,10 +16,10 @@ export const fetchTonicBrands = createAsyncThunk(
             }
         });
         const data = await response.json();
-        console.log(data)
         return data;
     }
-)
+);
+
 const tonicBrandSlice = createSlice({
     name: "tonicBrands",
     initialState,

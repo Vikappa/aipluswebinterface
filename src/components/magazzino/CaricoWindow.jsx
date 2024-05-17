@@ -9,6 +9,9 @@ import RowTonicaBottleCarico from "./subcomponents/RowTonicaBottleCarico";
 import RowDeperibileCarico from "./subcomponents/RowDeperibileCarico";
 import { setNewItemCaricoType } from "../../redux/reducers/newItemCaricoReducer";
 import { fetchTonicBrands } from "../../redux/reducers/tonicBrandReducer";
+import { fetchFoodShortLine, fetchGarnishShortLine } from '../../redux/reducers/wharehouseReducers'
+import { fetchFlavours } from "../../redux/reducers/flavourReducer";
+import { fetchColours } from "../../redux/reducers/colourReducer";
 
 
 const CaricoWindow = function() {
@@ -51,6 +54,18 @@ const CaricoWindow = function() {
         dispatch(setCaricoNote(noteValue));
     }
 
+    useEffect(() => {
+        fetchNCarico()
+        dispatch(fetchGinBrands())
+        dispatch(fetchGinFlavours())
+        dispatch(fetchTonicBrands())
+        dispatch(fetchFoodShortLine())
+        dispatch(fetchGarnishShortLine())
+        dispatch(fetchFlavours())
+        dispatch(fetchColours())
+    }, [dispatch])
+    
+
     const fetchNCarico = async () => {
         try{
             const response = await fetch('http://localhost:3001/carichi/getlastcarico', {
@@ -72,10 +87,7 @@ const CaricoWindow = function() {
     }
 
     const fetchUser = async () => {
-        fetchNCarico()
-        dispatch(fetchGinBrands())
-        dispatch(fetchGinFlavours())
-        dispatch(fetchTonicBrands())
+
         try {
             const response = await fetch('http://localhost:3001/users/profile', {
                 method: 'GET',
@@ -97,10 +109,6 @@ const CaricoWindow = function() {
     useEffect(() => {
         fetchUser();
     }, [])
-
-    useEffect(() => {
-        console.log(newItem)
-    }, [newItem])
     
 
     const formatDate = (date) => {

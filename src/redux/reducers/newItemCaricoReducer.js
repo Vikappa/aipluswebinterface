@@ -68,6 +68,12 @@ const newItemCaricoReducer = createSlice({
         },
         setAlcPercentage(state, action){ 
             state.newItem.alcPercentage = action.payload;
+        },setDeperibileName(state, action){
+            state.newItem.deperibileName = action.payload;
+        },setUm(state, action){
+            state.newItem.um = action.payload;
+        },setColor(state, action){
+            state.newItem.color = action.payload;
         }
     }
 });
@@ -89,7 +95,10 @@ export const {
     setImageUrl,
     deleteImageFile,
     resetImageUrl,
-    setAlcPercentage
+    setAlcPercentage,
+    setDeperibileName, 
+    setUm, 
+    setColor
 } = newItemCaricoReducer.actions;
 
 export default newItemCaricoReducer.reducer;

@@ -31,4 +31,4 @@ const ginFlavourSlice = createSlice({
     }    
 });
 
-export default ginFlavourSlice.reducer;
+export default ginFlavourSlice.reducer

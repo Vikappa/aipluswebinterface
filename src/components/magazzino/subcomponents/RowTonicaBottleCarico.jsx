@@ -33,8 +33,6 @@ const RowTonicaBottleCarico = function(){
     }
 
 
-
-
     return(
         <>
             <div className="d-flex flex-column">
@@ -62,7 +60,7 @@ const RowTonicaBottleCarico = function(){
 
                 <div className="d-flex mb-2">
                     <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita} />
-                    <select id="ginFlavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeTonicFlavour}>
+                    <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeTonicFlavour}>
                         {tonicaBrands.map((flavour) => (
                             <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
                         ))}
@@ -70,7 +68,8 @@ const RowTonicaBottleCarico = function(){
 
                 </div>
                 
-            </div>        </>
+            </div>        
+        </>
     )
 }
 

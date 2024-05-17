@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
-    flavours: []
+  colours: []
 }
 
-export const fetchFlavours = createAsyncThunk(
-    "flavours/getall",
+export const fetchColours = createAsyncThunk(
+    "colours/getall",
     async () => {
         const token = sessionStorage.getItem("token")
-        const response = await fetch("http://localhost:3001/flavours/getall", {
+        const response = await fetch("http://localhost:3001/colors/getall", {
             method: 'GET', 
             headers: {
                 'Content-Type': 'application/json',
@@ -20,15 +20,15 @@ export const fetchFlavours = createAsyncThunk(
     }
 )
 
-const flavourSlice = createSlice({
-    name: "flavours",
+const colourSlice = createSlice({
+    name: "colours",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(fetchFlavours.fulfilled, (state, action) => {
-            state.flavours = action.payload
+        builder.addCase(fetchColours.fulfilled, (state, action) => {
+            state.colours = action.payload
         })
     }    
 })
 
-export default flavourSlice.reducer
+export default colourSlice.reducer
