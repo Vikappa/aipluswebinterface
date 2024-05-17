@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import AddBrandModal from './AddBrandModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-
 import Spinner1 from './Spinner1';
 
 const GinBrandsWindow = () => {
@@ -35,6 +34,11 @@ const GinBrandsWindow = () => {
     };
 
     const addNewBrand = async ({ name, description, imageUrl, sovrapprezzo }) => {
+        if (sovrapprezzo < 0) {
+            alert('Il sovrapprezzo non può essere negativo');
+            return;
+        }
+
         try {
             const response = await fetch('http://localhost:3001/ginbrand', {
                 method: 'POST',
@@ -46,7 +50,7 @@ const GinBrandsWindow = () => {
             });
 
             if (response && response.ok) {
-                fetchGinBrands(); 
+                fetchGinBrands();
             } else {
                 console.error('Failed to add gin brand:', response.statusText);
             }
@@ -55,7 +59,12 @@ const GinBrandsWindow = () => {
         }
     };
 
-    const addNewBrandWithImg = async function ({ name, description, image, surcharge }) {
+    const addNewBrandWithImg = async ({ name, description, image, surcharge }) => {
+        if (surcharge < 0) {
+            alert('Il sovrapprezzo non può essere negativo');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('name', name);
         formData.append('description', description);
@@ -134,7 +143,6 @@ const GinBrandsWindow = () => {
                         );
                     })}
 
-                    
                     <button className='full-width d-flex align-items-center justify-content-between btn-outline-primary rounded-3 border-primary border-3' onClick={openModal} >
                          <p className='m-1 text-primary'>Aggiungi brand</p>
                          <i className="bi bi-plus-circle m-2 fs-4 text-primary"></i>

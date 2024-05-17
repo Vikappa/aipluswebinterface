@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Modal from 'react-bootstrap/Modal';
+import { Button, Form, InputGroup } from "react-bootstrap";
 import {
     setNewItemCaricoType,
     setGinBrand,
@@ -17,8 +18,9 @@ import {
     resetImageUrl,
     setAlcPercentage
 } from "/src/redux/reducers/newItemCaricoReducer";
-import { Button } from "react-bootstrap";
 import { pushGinBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
+import { fetchGinFlavours } from "../../../redux/reducers/ginFlavourReducer";
+import { fetchGinBrands } from "../../../redux/reducers/ginBrandsReducer";
 
 const RowGinBottleCarico = function() {
     const dispatch = useDispatch();
@@ -29,7 +31,13 @@ const RowGinBottleCarico = function() {
     const [showGinBrandModal, setShowGinBrandModal] = useState(false);
     const [showGinFlavourModal, setShowGinFlavourModal] = useState(false);
     const [newItemName, setNewItemName] = useState("");
+    const [newGinFlavour, setNewGinFlavour] = useState("");
     const [previousGinBrand, setPreviousGinBrand] = useState(localItem.ginBrand);
+    const [surcharge, setSurcharge] = useState(0);
+    const [description, setDescription] = useState('');
+    const [useUrl, setUseUrl] = useState(false);
+    const [url, setUrl] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null);
 
     const handleChangeUrl = (e) => {
@@ -48,40 +56,14 @@ const RowGinBottleCarico = function() {
         dispatch(setNome(e.target.value));
     };
 
-    const handleAddImageFile = async (e) => {
-        e.preventDefault();
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedFile(file);
+        } else {
+            console.warn("Nessun file selezionato");
+        }
         handleCloseModalAggiungiImmane();
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (file.size > 5242880) {
-            alert("Immagine troppo pesante. Massimo peso previsto 5MB.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const token = sessionStorage.getItem('token');
-
-        try {
-            const response = await fetch('http://localhost:3001/uploadimg', { 
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            if (!response.ok) {
-                throw new Error('Errore durante il caricamento del file');
-            }
-
-            const data = await response.json();
-            dispatch(setImageUrl(data.url));
-        } catch (error) {
-            console.error('Errore:', error);
-        }
     };
 
     const handleAddImageUrl = () => {
@@ -151,47 +133,87 @@ const RowGinBottleCarico = function() {
         dispatch(deleteImageFile());
     };
 
-    const handleGinBrandModalSubmit = () => {
-        // Aggiungi qui la logica per fare la POST al backend.
-        // Esempio di chiamata API (assicurati di sostituire l'URL con il tuo endpoint):
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
+    const handleGinBrandModalSubmit = async (e) => {
+        e.preventDefault();
 
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setGinBrand(newItemName));
-        setShowGinBrandModal(false);
+        let imageUrl = url;
+
+        if (!useUrl && selectedFile) {
+            const formData = new FormData();
+            formData.append('name', newItemName);
+            formData.append('imageFile', selectedFile);
+            formData.append('description', description);
+            formData.append('sovrapprezzo', surcharge);
+
+            try {
+                const response = await fetch('http://localhost:3001/ginbrand/uploadimage', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Errore durante il caricamento del file');
+                }
+
+                const data = await response.json();
+                imageUrl = data.url;
+            } catch (error) {
+                console.error('Errore:', error);
+            }
+        }
+
+        try {
+            const response = await fetch('http://localhost:3001/ginbrand', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+                },
+                body: JSON.stringify({ name: newItemName, description, imageUrl, sovrapprezzo: surcharge }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Errore durante l\'aggiunta del brand');
+            }
+
+            dispatch(fetchGinBrands())
+            dispatch(setGinBrand(newItemName));
+            setShowGinBrandModal(false);
+        } catch (error) {
+            console.error('Errore:', error);
+        }
     };
 
-    const handleGinFlavourModalSubmit = () => {
-        // Logica per fare la POST al backend per i flavour
-        // Esempio:
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
+    const handleGinFlavourModalSubmit = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/ginflavours/add', { 
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "name": newGinFlavour
+                })
+            })
 
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setFlavour(newItemName));
-        setShowGinFlavourModal(false);
-    };
+            if (!response.ok) {
+                throw new Error('Errore POST new Flavour')
+            }
+
+            const data = await response.json()
+            console.log(data)
+        } catch (error) {
+            console.error('Errore:', error)
+        }
+
+          dispatch(fetchGinFlavours())
+          dispatch(setFlavour(newGinFlavour))
+        setShowGinFlavourModal(false)
+    }
 
     const handleChangeAlcPercentage = (e) => {
         const value = e.target.value === '' ? null : Number(e.target.value);
@@ -205,7 +227,7 @@ const RowGinBottleCarico = function() {
             localItem.anno && localItem.data_scadenza && localItem.batchNumber;
     };
 
-    const insertProduct = () => {
+    const insertProduct = async () => {
         let updatedItem = { ...localItem };
 
         if (!updatedItem.ginBrand) {
@@ -214,6 +236,32 @@ const RowGinBottleCarico = function() {
 
         if (!updatedItem.flavour) {
             updatedItem.flavour = ginFlavours[0]?.name || '';
+        }
+
+        if (!updatedItem.imageUrl && selectedFile) {
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const token = sessionStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:3001/uploadimg', { 
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Errore durante il caricamento del file');
+                }
+
+                const data = await response.json();
+                updatedItem.imageUrl = data.url;
+            } catch (error) {
+                console.error('Errore:', error);
+            }
         }
 
         if (!updatedItem.quantita) {
@@ -287,7 +335,7 @@ const RowGinBottleCarico = function() {
                             type="file"
                             ref={fileInputRef}
                             accept="image/*"
-                            onChange={handleAddImageFile}
+                            onChange={handleFileChange}
                             style={{ display: 'none' }}
                             id="file-upload"
                         />
@@ -319,28 +367,75 @@ const RowGinBottleCarico = function() {
                 <Modal.Header closeButton>
                     <Modal.Title>Aggiungi Nuovo Brand Gin</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="newGinBrandName">Nome</label>
-                            <input
+                <Form onSubmit={handleGinBrandModalSubmit}>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Nome nuovo brand</Form.Label>
+                            <Form.Control
                                 type="text"
-                                className="form-control"
-                                id="newGinBrandName"
+                                placeholder="Ophir, Citadelle, ecc"
                                 value={newItemName}
                                 onChange={(e) => setNewItemName(e.target.value)}
                             />
-                        </div>
-                    </form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleGinBrandModalClose}>
-                        Chiudi
-                    </Button>
-                    <Button variant="primary" onClick={handleGinBrandModalSubmit}>
-                        Salva
-                    </Button>
-                </Modal.Footer>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>
+                                Seleziona la spunta per inserire un URL invece di caricare un file
+                            </Form.Label>
+                            <InputGroup className="mb-3">
+                                <InputGroup.Checkbox
+                                    aria-label="Checkbox per inserire URL invece di file"
+                                    checked={useUrl}
+                                    onChange={() => setUseUrl(!useUrl)}
+                                />
+                                {useUrl ? (
+                                    <Form.Control
+                                        type="text"
+                                        aria-label="Inserisci URL"
+                                        placeholder="https://example.com/image.jpg"
+                                        value={url}
+                                        onChange={(e) => setUrl(e.target.value)}
+                                    />
+                                ) : (
+                                    <Form.Control
+                                        type="file"
+                                        aria-label="Carica file immagine"
+                                        onChange={handleFileChange}
+                                    />
+                                )}
+                            </InputGroup>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Sovrapprezzo</Form.Label>
+                            <Form.Control
+                                type="number"
+                                placeholder="0.0"
+                                value={surcharge}
+                                onChange={(e) => setSurcharge(parseFloat(e.target.value) || 0)}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Descrizione</Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleGinBrandModalClose}>
+                            Chiudi
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Salva
+                        </Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
 
             {/* Modale per Gin Flavour */}
@@ -356,8 +451,8 @@ const RowGinBottleCarico = function() {
                                 type="text"
                                 className="form-control"
                                 id="newGinFlavourName"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
+                                value={newGinFlavour}
+                                onChange={(e) => setNewGinFlavour(e.target.value)}
                             />
                         </div>
                     </form>

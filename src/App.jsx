@@ -5,15 +5,15 @@ import LoginForm from './components/LoginForm'
 import WorkerPanel from './components/WorkerPanel'
 import './App.css'
 import CaricoWindow from './components/magazzino/CaricoWindow'
+import NavBarAipiu from './components/NavBarAipiu'
 
 
 function App() {
 
-  return (
+  return (<>
+      <NavBarAipiu/>
     <div className='d-flex flex-column justify-content-center align-items-center full-width' >
     <div className='d-flex flex-column align-items-center justify-content-center full-width' >
-      <h1>я пью</h1>
-      <h2>Io bevo</h2>
       <Routes>
       <Route path='/' element={<LoginForm/>} />
       <Route path='/admin' element={<AdminPage/>} />
@@ -22,6 +22,7 @@ function App() {
       </Routes>
     </div>
     </div>
+  </>
   )
 }
 

@@ -1,4 +1,3 @@
-import GinBottleStock from "./magazzino/GinBottleStock";
 
 const Magazzino = function () {
     return (
@@ -25,7 +24,6 @@ const Magazzino = function () {
                     </h2>
                     <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionMagazzino">
                         <div className="accordion-body">
-                            <GinBottleStock/>
                         </div>
                     </div>
                 </div>

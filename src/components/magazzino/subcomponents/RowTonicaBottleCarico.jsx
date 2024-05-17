@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
-import { setNewItemCaricoType, setGinBrand, setFlavour, setNome, setQuantita, setVolume } from "../../../redux/reducers/newItemCaricoReducer";
+import { setNewItemCaricoType, setGinBrand, setFlavour, setNome, setQuantita, setVolume, resetNewItem } from "../../../redux/reducers/newItemCaricoReducer";
+import { pushGinBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
 
 const RowTonicaBottleCarico = function() {
 
@@ -44,11 +45,17 @@ const RowTonicaBottleCarico = function() {
     }
 
     const handleChangeQuantita = (e) => {
-        dispatch(setQuantita(e.target.value));
+        const value = e.target.value === '' ? null : Number(e.target.value);
+        if (value !== null && value >= 0) {
+            dispatch(setQuantita(value));
+        }
     }
 
     const handleChangeVolume = (e) => {
-        dispatch(setVolume(e.target.value));
+        const value = e.target.value === '' ? null : Number(e.target.value);
+        if (value !== null && value >= 0) {
+            dispatch(setVolume(value));
+        }
     }
 
     const handleTonicBrandModalClose = () => {
@@ -81,26 +88,49 @@ const RowTonicaBottleCarico = function() {
         setShowTonicBrandModal(false);
     }
 
-    const handleFlavourModalSubmit = () => {
-        // Logica per fare la POST al backend per i flavour
-        // Esempio:
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
+    const handleFlavourModalSubmit = async () => {
+console.log("Prova")
+        const response = await fetch('http://localhost:3001/flavour/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
             },
             body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
+        })
+        if(response.ok){
+            const data = await response.json();
+            console.log(data)
+        } else {
+            console.log("Error adding new flavour");
+        }
 
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setFlavour(newItemName));
-        setShowFlavourModal(false);
+        dispatch(setFlavour(newItemName))
+        setShowFlavourModal(false)
     }
+
+    const isFormValid = () => {
+        return localItem.tipo && localItem.ginBrand && localItem.nome && localItem.volume > 0 && localItem.quantita > 0 && localItem.flavour;
+    };
+
+    const handleOkClick = () => {
+        let updatedItem = { ...localItem };
+
+        if (!updatedItem.ginBrand) {
+            updatedItem.ginBrand = tonicaBrands[0]?.name || '';
+        }
+
+        if (!updatedItem.flavour) {
+            updatedItem.flavour = flavours[0]?.name || '';
+        }
+
+        if (!updatedItem.quantita) {
+            updatedItem.quantita = 1;
+        }
+
+        dispatch(pushGinBottleToCarico(updatedItem));
+        dispatch(resetNewItem());
+    };
 
     return (
         <>
@@ -134,6 +164,10 @@ const RowTonicaBottleCarico = function() {
                         ))}
                         <option value="Aggiungi">+Aggiungi</option>
                     </select>
+                </div>
+
+                <div className="d-flex mb-2">
+                    <Button className="btn btn-success" onClick={handleOkClick} disabled={!isFormValid()}>Ok</Button>
                 </div>
             </div>
 
