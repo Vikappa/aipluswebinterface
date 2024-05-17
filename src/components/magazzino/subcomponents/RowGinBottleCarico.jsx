@@ -26,6 +26,10 @@ const RowGinBottleCarico = function() {
     const ginFlavours = useSelector(state => state.ginFlavours.ginFlavours);
     const localItem = useSelector(state => state.newItemCarico.newItem);
     const [showModaleImmagine, setShowModaleImmagine] = useState(false);
+    const [showGinBrandModal, setShowGinBrandModal] = useState(false);
+    const [showGinFlavourModal, setShowGinFlavourModal] = useState(false);
+    const [newItemName, setNewItemName] = useState("");
+    const [previousGinBrand, setPreviousGinBrand] = useState(localItem.ginBrand);
     const fileInputRef = useRef(null);
 
     const handleChangeUrl = (e) => {
@@ -112,20 +116,81 @@ const RowGinBottleCarico = function() {
     };
 
     const handleChangeGinBrand = (e) => {
-        dispatch(setGinBrand(e.target.value));
+        const selectedBrand = e.target.value;
+        if (selectedBrand === "Aggiungi") {
+            setPreviousGinBrand(localItem.ginBrand);
+            setShowGinBrandModal(true);
+        } else {
+            dispatch(setGinBrand(selectedBrand));
+        }
+    };
+
+    const handleChangeGinFlavour = (e) => {
+        if (e.target.value === "Aggiungi") {
+            setShowGinFlavourModal(true);
+        } else {
+            dispatch(setFlavour(e.target.value));
+        }
     };
 
     const handleCloseModalAggiungiImmane = () => {
         setShowModaleImmagine(false);
     };
 
+    const handleGinBrandModalClose = () => {
+        dispatch(setGinBrand(previousGinBrand));
+        setShowGinBrandModal(false);
+    };
+
+    const handleGinFlavourModalClose = () => {
+        setShowGinFlavourModal(false);
+    }
+
     const handleAnnulla = () => {
         dispatch(resetImageUrl());
         dispatch(deleteImageFile());
     };
 
-    const handleChangeGinFlavour = (e) => {
-        dispatch(setFlavour(e.target.value));
+    const handleGinBrandModalSubmit = () => {
+        // Aggiungi qui la logica per fare la POST al backend.
+        // Esempio di chiamata API (assicurati di sostituire l'URL con il tuo endpoint):
+        /*
+        fetch('http://localhost:3001/your-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: newItemName }),
+        }).then(response => response.json())
+          .then(data => {
+              // Gestisci la risposta della POST qui
+          });
+        */
+
+        // Aggiorna lo stato globale e chiudi il modale
+        dispatch(setGinBrand(newItemName));
+        setShowGinBrandModal(false);
+    };
+
+    const handleGinFlavourModalSubmit = () => {
+        // Logica per fare la POST al backend per i flavour
+        // Esempio:
+        /*
+        fetch('http://localhost:3001/your-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: newItemName }),
+        }).then(response => response.json())
+          .then(data => {
+              // Gestisci la risposta della POST qui
+          });
+        */
+
+        // Aggiorna lo stato globale e chiudi il modale
+        dispatch(setFlavour(newItemName));
+        setShowGinFlavourModal(false);
     };
 
     const handleChangeAlcPercentage = (e) => {
@@ -174,7 +239,7 @@ const RowGinBottleCarico = function() {
                         {ginBrands.map((brand) => (
                             <option key={brand.name} value={brand.name}>{brand.name}</option>
                         ))}
-                        <option value="">+Aggiungi</option>
+                        <option value="Aggiungi">+Aggiungi</option>
                     </select>
 
                     <input type="text" id="ginName" placeholder="Nome Gin" className="form-control me-2" value={localItem.nome || ''} onChange={handleChangeNome} />
@@ -187,6 +252,7 @@ const RowGinBottleCarico = function() {
                         {ginFlavours.map((flavour) => (
                             <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
                         ))}
+                        <option value="Aggiungi">+Aggiungi</option>
                     </select>
                 </div>
 
@@ -206,7 +272,7 @@ const RowGinBottleCarico = function() {
                 </div>
             </div>
 
-            {/* modal */}
+            {/* Modale per immagine */}
             <Modal show={showModaleImmagine} onHide={handleCloseModalAggiungiImmane}>
                 <Modal.Header closeButton>
                     <Modal.Title>Inserisci immagine</Modal.Title>
@@ -244,6 +310,64 @@ const RowGinBottleCarico = function() {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleAnnulla}>
                         Annulla
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modale per Gin Brand */}
+            <Modal show={showGinBrandModal} onHide={handleGinBrandModalClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Aggiungi Nuovo Brand Gin</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="newGinBrandName">Nome</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="newGinBrandName"
+                                value={newItemName}
+                                onChange={(e) => setNewItemName(e.target.value)}
+                            />
+                        </div>
+                    </form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleGinBrandModalClose}>
+                        Chiudi
+                    </Button>
+                    <Button variant="primary" onClick={handleGinBrandModalSubmit}>
+                        Salva
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modale per Gin Flavour */}
+            <Modal show={showGinFlavourModal} onHide={handleGinFlavourModalClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Aggiungi Nuovo Flavour</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="newGinFlavourName">Nome</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="newGinFlavourName"
+                                value={newItemName}
+                                onChange={(e) => setNewItemName(e.target.value)}
+                            />
+                        </div>
+                    </form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleGinFlavourModalClose}>
+                        Chiudi
+                    </Button>
+                    <Button variant="primary" onClick={handleGinFlavourModalSubmit}>
+                        Salva
                     </Button>
                 </Modal.Footer>
             </Modal>
