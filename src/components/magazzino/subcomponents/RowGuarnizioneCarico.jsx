@@ -1,243 +1,219 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import Modal from 'react-bootstrap/Modal';
-import { Button } from "react-bootstrap";
-import { setNewItemCaricoType, setDeperibileName, setFlavour, setQuantita, setUm, setColor } from "../../../redux/reducers/newItemCaricoReducer";
+import { useEffect, useState } from "react";
+import { setNewItemCaricoType, setGarnishName, setFlavour, setQuantita, setUm, setColor } from "../../../redux/reducers/newItemCaricoReducer";
+import { Button, Modal } from "react-bootstrap";
+import { fetchFlavours } from "../../../redux/reducers/flavourReducer";
+import { fetchColours} from "../../../redux/reducers/colourReducer";
+import { pushGarnishToCarico } from "../../../redux/reducers/newCaricoReducer";
 
 const RowGuarnizioneCarico = function() {
-
     const whareHouse = useSelector(state => state.wharehouse);
     const dispatch = useDispatch();
     const localItem = useSelector(state => state.newItemCarico.newItem);
     const flavours = useSelector(state => state.flavours.flavours);
     const colours = useSelector(state => state.colours.colours);
-
-    const [showGarnishModal, setShowGarnishModal] = useState(false);
+    const [isTypingNewGarnish, setIsTypingNewGarnish] = useState(false);
+    const [showColorModal, setShowColorModal] = useState(false);
     const [showFlavourModal, setShowFlavourModal] = useState(false);
-    const [showColourModal, setShowColourModal] = useState(false);
+    const [newColor, setNewColor] = useState("");
+    const [newFlavour, setNewFlavour] = useState("");
 
-    const [newItemName, setNewItemName] = useState("");
-    const [newItemUm, setNewItemUm] = useState("");
-    const [previousGarnish, setPreviousGarnish] = useState(localItem.deperibileName);
+    useEffect(() => {
+        if (whareHouse.garnishShortLine.length > 0) {
+            const firstGarnish = whareHouse.garnishShortLine[0];
+            dispatch(setGarnishName(firstGarnish.name));
+            dispatch(setUm(firstGarnish.um));
+            dispatch(setColor(firstGarnish.color.name));
+            dispatch(setFlavour(firstGarnish.flavour.name));
+        }
+    }, [dispatch, whareHouse.garnishShortLine]);
+
+    const handleGarnishChange = (e) => {
+        const selectedGarnish = e.target.value;
+        if (selectedGarnish === "aggiungi") {
+            setIsTypingNewGarnish(true);
+            dispatch(setGarnishName(""));
+            dispatch(setUm(""));
+            dispatch(setColor(""));
+            dispatch(setFlavour(""));
+        } else {
+            setIsTypingNewGarnish(false);
+            const selectedItem = whareHouse.garnishShortLine.find(item => item.name === selectedGarnish);
+            if (selectedItem) {
+                dispatch(setGarnishName(selectedItem.name));
+                dispatch(setUm(selectedItem.um));
+                dispatch(setColor(selectedItem.color.name));
+                dispatch(setFlavour(selectedItem.flavour.name));
+            }
+        }
+    }
 
     const handleChangeTipo = (e) => {
         dispatch(setNewItemCaricoType(e.target.value));
     }
 
-    const handleChangeColor = (e) => {
-        if (e.target.value === "Aggiungi") {
-            setShowColourModal(true);
+    const handleColorChange = (e) => {
+        if (e.target.value === "aggiungi") {
+            setShowColorModal(true);
         } else {
             dispatch(setColor(e.target.value));
         }
     }
 
-    const handleChangeFlavour = (e) => {
-        if (e.target.value === "Aggiungi") {
+    const handleFlavourChange = (e) => {
+        if (e.target.value === "aggiungi") {
             setShowFlavourModal(true);
         } else {
             dispatch(setFlavour(e.target.value));
         }
     }
 
-    const handleChangeGarnish = (e) => {
-        const selectedGarnish = e.target.value;
-        if (selectedGarnish === "Aggiungi") {
-            setPreviousGarnish(localItem.deperibileName);
-            setShowGarnishModal(true);
+    const handleColorModalSubmit = async () => {
+        const response = await fetch('http://localhost:3001/colors/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
+            },
+            body: JSON.stringify({ name: newColor }),
+        })
+        if(response.ok){
+            const data = await response.json();
+            console.log(data)
+            dispatch(fetchColours())
+            dispatch(setFlavour(newColor))
+            setShowFlavourModal(false)
         } else {
-            dispatch(setDeperibileName(selectedGarnish));
-
-            const garnishItem = whareHouse.garnishShortLine.find(garnish => garnish.name === selectedGarnish);
-            if (garnishItem) {
-                dispatch(setUm(garnishItem.um));
-            }
+            console.log("Error adding new flavour");
         }
     }
 
-    const handleChangeQuantita = (e) => {
-        dispatch(setQuantita(e.target.value));
-    }
-
-    const handleChangeUm = (e) => {
-        dispatch(setUm(e.target.value));
-    }
-
-    const handleGarnishModalClose = () => {
-        dispatch(setDeperibileName(previousGarnish));
-        setShowGarnishModal(false);
-    }
-
-    const handleFlavourModalClose = () => {
-        setShowFlavourModal(false);
-    }
-
-    const handleColourModalClose = () => {
-        setShowColourModal(false);
-    }
-
-    const handleGarnishModalSubmit = () => {
-        // Aggiungi qui la logica per fare la POST al backend.
-        // Esempio di chiamata API (assicurati di sostituire l'URL con il tuo endpoint):
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
+    const handleFlavourModalSubmit = async () => {
+        const response = await fetch('http://localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
             },
-            body: JSON.stringify({ name: newItemName, um: newItemUm }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
-
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setDeperibileName(newItemName));
-        dispatch(setUm(newItemUm));
-        setShowGarnishModal(false);
+            body: JSON.stringify({ name: newFlavour }),
+        })
+        if(response.ok){
+            const data = await response.json();
+            console.log(data)
+            dispatch(fetchFlavours())
+            dispatch(setFlavour(newFlavour))
+            setShowFlavourModal(false)
+        } else {
+            console.log("Error adding new flavour");
+        }
     }
 
-    const handleFlavourModalSubmit = () => {
-        // Logica per fare la POST al backend per i flavour
-        // Esempio:
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
-
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setFlavour(newItemName));
-        setShowFlavourModal(false);
+    const isFormValid = () => {
+        return localItem.quantita && localItem.garnishName && localItem.um && localItem.quantita
     }
 
-    const handleColourModalSubmit = () => {
-        // Logica per fare la POST al backend per i colori
-        // Esempio:
-        /*
-        fetch('http://localhost:3001/your-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: newItemName }),
-        }).then(response => response.json())
-          .then(data => {
-              // Gestisci la risposta della POST qui
-          });
-        */
-
-        // Aggiorna lo stato globale e chiudi il modale
-        dispatch(setColor(newItemName));
-        setShowColourModal(false);
+    const insertProduct = function(){
+        dispatch(pushGarnishToCarico(localItem))
     }
 
     return (
         <>
-            <div className="d-flex flex-column">
-                <div className="d-flex mb-2">
-                    <select id="tipoProdotto" className="form-control me-2" value={localItem.tipo} onChange={handleChangeTipo}>
-                        <option value="Guarnizione">Guarnizione</option>
-                        <option value="Alimento deperibile">Alimento deperibile</option>
-                        <option value="Bottiglia di tonica">Bottiglia di tonica</option>
-                        <option value="Bottiglia di gin">Bottiglia di Gin</option>
-                    </select>
+            <div className="d-flex mb-3">
+                <select id="tipoProdotto" className="form-control me-2" value={localItem.tipo} onChange={handleChangeTipo}>
+                    <option value="Guarnizione">Guarnizione</option>
+                    <option value="Bottiglia di gin">Bottiglia di Gin</option>
+                    <option value="Bottiglia di tonica">Bottiglia di tonica</option>
+                    <option value="Alimento deperibile">Alimento deperibile</option>
+                </select>
 
-                    <select id="shortlinesextra" className="form-control me-2" value={localItem.deperibileName} onChange={handleChangeGarnish}>
-                        {whareHouse.garnishShortLine.map((food) => (
-                            <option key={food.name} value={food.name}>{food.name} - {food.um}</option>
-                        ))}
-                        <option value="Aggiungi">+Aggiungi</option>
-                    </select>
-                </div>
-
-                <div className="d-flex mb-2">
-                    <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita} />
-                    <input type="text" id="imInput" placeholder="UM" className="form-control me-2" value={localItem.um || ''} onChange={handleChangeUm} />
-
-                    <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeFlavour}>
-                        {flavours.map((flavour) => (
-                            <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
-                        ))}
-                        <option value="Aggiungi">+Aggiungi</option>
-                    </select>
-                    <select id="colorSelect" value={localItem.color} className="form-control me-2" onChange={handleChangeColor}>
-                        {colours.map((color) => (
-                            <option key={color.name} value={color.name}>{color.name}</option>
-                        ))}
-                        <option value="Aggiungi">+Aggiungi</option>
-                    </select>
-                </div>
+                <select className="form-control" onChange={handleGarnishChange}>
+                    {whareHouse.garnishShortLine.map((item) => (
+                        <option key={item.id} value={item.name}>{item.name} ({item.um})</option>
+                    ))}
+                    <option value="aggiungi">+Aggiungi</option>
+                </select>
             </div>
+            <div className="d-flex mb-3">
+                <input
+                    type="text"
+                    className="form-control mr-2"
+                    placeholder="Nome"
+                    value={localItem.garnishName}
+                    onChange={e => dispatch(setGarnishName(e.target.value))}
+                    disabled={!isTypingNewGarnish}
+                />
+                <input
+                    type="text"
+                    className="form-control mr-2"
+                    placeholder="UM"
+                    value={localItem.um}
+                    onChange={e => dispatch(setUm(e.target.value))}
+                    disabled={!isTypingNewGarnish}
+                />
+                <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Quantità"
+                    value={localItem.quantita}
+                    onChange={e => dispatch(setQuantita(e.target.value))}
+                />
+            </div>
+            <div className="d-flex mb-3">
+                <select className="form-control mr-2" onChange={handleColorChange} value={localItem.color} disabled={!isTypingNewGarnish}>
+                    {colours.map((color) => (
+                        <option key={color.id} value={color.name}>{color.name}</option>
+                    ))}
+                    <option value="aggiungi">+Aggiungi</option>
+                </select>
+                <select className="form-control" onChange={handleFlavourChange} value={localItem.flavour} disabled={!isTypingNewGarnish}>
+                    {flavours.map((flavour) => (
+                        <option key={flavour.id} value={flavour.name}>{flavour.name}</option>
+                    ))}
+                    <option value="aggiungi">+Aggiungi</option>
+                </select>
+            </div>
+            <Button disabled={!isFormValid()} onClick={insertProduct}>Ok</Button>
 
-            {/* Modale per Garnish */}
-            <Modal show={showGarnishModal} onHide={handleGarnishModalClose} animation={true}>
+            {/* Modal per aggiungere nuovo colore */}
+            <Modal show={showColorModal} onHide={() => setShowColorModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Aggiungi Nuovo Elemento</Modal.Title>
+                    <Modal.Title>Aggiungi Nuovo Colore</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="newItemName">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="newItemName"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="newItemUm">UM</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="newItemUm"
-                                value={newItemUm}
-                                onChange={(e) => setNewItemUm(e.target.value)}
-                            />
-                        </div>
-                    </form>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Nome Colore"
+                        value={newColor}
+                        onChange={e => setNewColor(e.target.value)}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleGarnishModalClose}>
+                    <Button variant="secondary" onClick={() => setShowColorModal(false)}>
                         Chiudi
                     </Button>
-                    <Button variant="primary" onClick={handleGarnishModalSubmit}>
+                    <Button variant="primary" onClick={handleColorModalSubmit}>
                         Salva
                     </Button>
                 </Modal.Footer>
             </Modal>
 
-            {/* Modale per Flavour */}
-            <Modal show={showFlavourModal} onHide={handleFlavourModalClose}>
+            {/* Modal per aggiungere nuovo gusto */}
+            <Modal show={showFlavourModal} onHide={() => setShowFlavourModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Aggiungi Nuovo Flavour</Modal.Title>
+                    <Modal.Title>Aggiungi Nuovo Gusto</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="newItemName">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="newItemName"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
-                            />
-                        </div>
-                    </form>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Nome Gusto"
+                        value={newFlavour}
+                        onChange={e => setNewFlavour(e.target.value)}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleFlavourModalClose}>
+                    <Button variant="secondary" onClick={() => setShowFlavourModal(false)}>
                         Chiudi
                     </Button>
                     <Button variant="primary" onClick={handleFlavourModalSubmit}>
@@ -245,37 +221,8 @@ const RowGuarnizioneCarico = function() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-            {/* Modale per Colour */}
-            <Modal show={showColourModal} onHide={handleColourModalClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Aggiungi Nuovo Colore</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <form>
-                        <div className="form-group">
-                            <label htmlFor="newItemName">Nome</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="newItemName"
-                                value={newItemName}
-                                onChange={(e) => setNewItemName(e.target.value)}
-                            />
-                        </div>
-                    </form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleColourModalClose}>
-                        Chiudi
-                    </Button>
-                    <Button variant="primary" onClick={handleColourModalSubmit}>
-                        Salva
-                    </Button>
-                </Modal.Footer>
-            </Modal>
         </>
-    )
+    );
 }
 
 export default RowGuarnizioneCarico;

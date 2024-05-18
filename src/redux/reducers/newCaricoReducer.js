@@ -74,17 +74,31 @@ const newCaricoReducer = createSlice({
                 name: payload.deperibileName,
                 flavourId: payload.flavour,
                 scadenza_ingrediente: payload.data_scadenza,
-                UM: payload.um 
+                UM: payload.um,
+                qtaExtra: payload.quantita
             }
 
-            for (let index = 0; index < payload.quantita; index++) {
                 newData.push(newItem);
+            
+            state.carico.data = newData;
+        }, pushGarnishToCarico(state, action){
+            let payload = action.payload;
+            let newData = [...state.carico.data]
+            let newItem = {
+                discriminatorString: "GUARNIZIONE",
+                name: payload.name,
+                flavourId: payload.flavour,
+                coloreId: payload.color,
+                UM: payload.um,
+                quantitaGarnish:payload.quantita
             }
+            newData.push(newItem);
+            
             state.carico.data = newData;
         }
     }
 })
 
-export const { setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico,pushTonicBottleToCarico, pushExtraToCarico } = newCaricoReducer.actions;
+export const { setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico,pushTonicBottleToCarico, pushExtraToCarico, pushGarnishToCarico } = newCaricoReducer.actions;
 
 export default newCaricoReducer.reducer;

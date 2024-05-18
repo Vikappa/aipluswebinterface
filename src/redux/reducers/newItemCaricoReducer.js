@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialNewItem = {
     tipo: "Seleziona tipo prodotto",
     nome: "",
-    quantita: 0,
     volume: 0,
     anno: "",
     data_scadenza: null,
@@ -74,6 +73,8 @@ const newItemCaricoReducer = createSlice({
             state.newItem.um = action.payload;
         },setColor(state, action){
             state.newItem.color = action.payload;
+        },setGarnishName(state, action){
+            state.newItem.garnishName = action.payload;
         }
     }
 });
@@ -98,7 +99,8 @@ export const {
     setAlcPercentage,
     setDeperibileName, 
     setUm, 
-    setColor
+    setColor, 
+    setGarnishName
 } = newItemCaricoReducer.actions;
 
 export default newItemCaricoReducer.reducer;

@@ -23,10 +23,12 @@ const RowTonicaBottleCarico = function() {
     const [previousTonicBrand, setPreviousTonicBrand] = useState(localItem.ginBrand);
 
     const handleChangeTipo = (e) => {
+        e.preventDefault();
         dispatch(setNewItemCaricoType(e.target.value));
     }
 
     const handleChangeTonicBrand = (e) => {
+        e.preventDefault();
         const selectedBrand = e.target.value;
         if (selectedBrand === "Aggiungi") {
             setPreviousTonicBrand(localItem.ginBrand);
@@ -37,10 +39,12 @@ const RowTonicaBottleCarico = function() {
     }
 
     const handleChangeDataScadenza = (e) => {
+        e.preventDefault();
         dispatch(setDataScadenza(e.target.value));
     };
 
     const handleChangeTonicFlavour = (e) => {
+        e.preventDefault();
         if (e.target.value === "Aggiungi") {
             setShowFlavourModal(true);
         } else {
@@ -49,10 +53,12 @@ const RowTonicaBottleCarico = function() {
     }
 
     const handleChangeNome = (e) => {
+        e.preventDefault();
         dispatch(setNome(e.target.value));
     }
 
     const handleChangeQuantita = (e) => {
+        e.preventDefault();
         const value = e.target.value === '' ? null : Number(e.target.value);
         if (value !== null && value >= 0) {
             dispatch(setQuantita(value));
@@ -62,6 +68,7 @@ const RowTonicaBottleCarico = function() {
 
 
     const handleTonicBrandModalClose = () => {
+        
         if(previousTonicBrand){
             dispatch(setGinBrand(previousTonicBrand));
         } else {
@@ -71,10 +78,12 @@ const RowTonicaBottleCarico = function() {
     }
 
     const handleFlavourModalClose = () => {
+        
         setShowFlavourModal(false);
     }
 
     const handleTonicBrandModalSubmit = async () => {
+        
         const response = await fetch("http://localhost:3001/brandtonica/add", {
             method: "POST",
             headers: {
@@ -101,14 +110,13 @@ const RowTonicaBottleCarico = function() {
     
 
     const handleFlavourModalSubmit = async () => {
-console.log("Prova")
-        const response = await fetch('http://localhost:3001/brandtonica/add', {
+        const response = await fetch('http://localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
             },
-            body: JSON.stringify({ name: newTonicBrandName, description: newTonicDescription }),
+            body: JSON.stringify({ name: newFlavourName }),
         })
         if(response.ok){
             const data = await response.json();
