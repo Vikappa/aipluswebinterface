@@ -14,7 +14,7 @@ import { fetchFlavours } from "../../redux/reducers/flavourReducer";
 import { fetchColours } from "../../redux/reducers/colourReducer";
 import ResumeRowProdotto from './subcomponents/ResumeRowProdotto'
 import { Button } from "react-bootstrap";
-
+import { useNavigate } from "react-router-dom";
 
 const CaricoWindow = function() {
 
@@ -26,7 +26,8 @@ const CaricoWindow = function() {
     let note = useSelector(state => state.newCarico.carico.note)
     let carrello = useSelector(state => state.newCarico.carico.data)
     const [nCarico, setNCarico] = useState(null);
-    
+    const navigate = useNavigate();
+
 
     const handleSelectChange = (e) => {
         dispatch(setNewItemCaricoType(e.target.value)); 
@@ -128,7 +129,7 @@ const CaricoWindow = function() {
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-
+            navigate(-1)
         } else {
             console.error("Failed to add carico");
         }
