@@ -13,6 +13,7 @@ import { fetchFoodShortLine, fetchGarnishShortLine } from '../../redux/reducers/
 import { fetchFlavours } from "../../redux/reducers/flavourReducer";
 import { fetchColours } from "../../redux/reducers/colourReducer";
 import ResumeRowProdotto from './subcomponents/ResumeRowProdotto'
+import { Button } from "react-bootstrap";
 
 
 const CaricoWindow = function() {
@@ -23,6 +24,7 @@ const CaricoWindow = function() {
     const dataDiOggi = new Date();
     const dispatch = useDispatch();
     let note = useSelector(state => state.newCarico.carico.note)
+    let carrello = useSelector(state => state.newCarico.carico.data)
     const [nCarico, setNCarico] = useState(null);
     
 
@@ -109,6 +111,33 @@ const CaricoWindow = function() {
     useEffect(() => {
         fetchUser();
     }, [])
+
+    const sendCarico = async function(){
+        const response = await fetch('http://localhost:3001/carichi', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+            },
+            body: JSON.stringify({
+                operatore: user, 
+                prodotti: carrello,
+                note: note
+            })
+        })
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+
+        } else {
+            console.error("Failed to add carico");
+        }
+    }
+
+    useEffect(() => {
+        console.log(carrello)
+    }, [])
+    
     
 
     const formatDate = (date) => {
@@ -165,9 +194,10 @@ const CaricoWindow = function() {
             rowDispatcher()
             }
 
-            <div className="d-flex">
+        </ul>
+        <div className="d-flex container-fluid ">
 
-        <textarea 
+            <textarea 
                 className="form-control" 
                 id="note" 
                 placeholder="Note" 
@@ -175,9 +205,8 @@ const CaricoWindow = function() {
                 value={note}
                 onChange={(e) => handleNoteChange(e)}
                 />
-                </div>
-        </ul>
-
+            </div>
+            <Button disabled={carrello.length<=0} onClick={sendCarico}>Invia</Button>
         </>
     );
 }
