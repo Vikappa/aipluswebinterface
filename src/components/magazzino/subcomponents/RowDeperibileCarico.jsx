@@ -26,7 +26,7 @@ const RowDeperibileCarico = function() {
 
     const handleChangeNewFlavourName = (e) => {
         setNewFlavourName(e)
-    }
+    }    
 
     const handleChangeTipo = (e) => {
         dispatch(setNewItemCaricoType(e.target.value));
