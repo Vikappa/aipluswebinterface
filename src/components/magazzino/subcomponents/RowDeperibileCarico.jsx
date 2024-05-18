@@ -7,7 +7,6 @@ import {
     resetNewItem
 } from "../../../redux/reducers/newItemCaricoReducer";
 import { pushExtraToCarico } from "../../../redux/reducers/newCaricoReducer";
-import { fetchGinBrands } from "../../../redux/reducers/ginBrandsReducer";
 import { fetchFlavours } from "../../../redux/reducers/flavourReducer";
 
 const RowDeperibileCarico = function() {
@@ -25,7 +24,7 @@ const RowDeperibileCarico = function() {
     const [newFlavourName, setNewFlavourName] = useState("");
 
     const handleChangeNewFlavourName = (e) => {
-        setNewFlavourName(e)
+        setNewFlavourName(e.target.value)
     }    
 
     const handleChangeTipo = (e) => {
@@ -53,7 +52,6 @@ const RowDeperibileCarico = function() {
                 dispatch(setUm(foodItem.um));
                 dispatch(setFlavour(foodItem.flavour.name))
             }
-
         }
     };
 
@@ -78,7 +76,6 @@ const RowDeperibileCarico = function() {
     };
 
     const handleFlavourModalSubmit = async () => {
-
         const response = await fetch('http://localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
@@ -109,18 +106,14 @@ const RowDeperibileCarico = function() {
     };
 
     const insertExtra = function(){
-
         let updatedItem = {...localItem};
-
         if(!updatedItem.deperibileName){
             updatedItem.deperibileName = whareHouse.foodShortLine[0].name;
             updatedItem.um = whareHouse.foodShortLine[0].um;
         }
-
         if(!updatedItem.flavour){
             updatedItem.flavour = flavours[0].name;
         }
-
         console.log(updatedItem)
         dispatch(pushExtraToCarico(updatedItem))
         dispatch(resetNewItem())
@@ -157,10 +150,10 @@ const RowDeperibileCarico = function() {
                 </div>
 
                 <div className="d-flex mb-2">
-                    <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita} />
+                    <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita}/>
                     <input type="date" id="expirationDate" className="form-control me-2" value={localItem.data_scadenza || ''} onChange={handleChangeDataScadenza} />
 
-                    <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeFlavour}>
+                    <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeFlavour} disabled={!isAddingNewFood}>
                         {flavours.map((flavour) => (
                             <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
                         ))}
@@ -169,8 +162,7 @@ const RowDeperibileCarico = function() {
                 </div>
             </div>
 
-<Button variant="success" disabled={!isFormValid()} onClick={insertExtra} >Ok</Button>
-
+            <Button variant="success" disabled={!isFormValid()} onClick={insertExtra}>Ok</Button>
 
             {/* Modale per Flavour */}
             <Modal show={showFlavourModal} onHide={handleFlavourModalClose} animation={true}>
