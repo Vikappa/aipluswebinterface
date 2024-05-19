@@ -1,40 +1,70 @@
-const RicetteWindow = function(){
-    return(
-        <div className="container-fluid my-5">
-        <h1>Ricette</h1>
-        <div className="accordion" id="accordionRicette">
-  <div className="accordion-item">
-    <h2 className="accordion-header">
-      <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Ricetta #1
-      </button>
-    </h2>
-    <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionRicette">
-      <div className="accordion-body d-flex align-intems-center justify-content-between ">
-        <div className="d-flex flex-column ">
-            <h5>Ricetta</h5>
-            <p className="m-0">Blablablablablabla</p> 
-            <p className="m-0">Blablablablablabla</p> 
-            <p className="m-0">Blablablablablabla</p> 
-            <br/>
-            <p className="m-0">Blablablablablabla</p> 
-        </div>
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchRicette } from "../redux/reducers/ricetteReducer.js";
 
-        <div className="d-flex flex-column ">
-        <div className="d-flex">
-        <i className="bi bi-currency-euro"></i>
-        <p>10€</p>
-        </div>
+const RicetteWindow = () => {
+  const dispatch = useDispatch();
+  const ricettario = useSelector((state) => state.ricette.ricette);
 
+  useEffect(() => {
+    console.log(ricettario)
+    dispatch(fetchRicette());
+  }, [dispatch]);
 
-        </div>
-
+  return (
+    <div className="container my-5">
+      <h1 className="mb-4">Ricette</h1>
+      <div className="accordion" id="accordionRicette">
+        {ricettario &&
+          ricettario.map((ricetta, index) => (
+            <div className="accordion-item" key={index}>
+              <h2 className="accordion-header" id={"heading" + index}>
+                <button
+                  className={`accordion-button ${index === 0 ? '' : 'collapsed'}`}
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target={`#collapse${index}`}
+                  aria-expanded={index === 0 ? "true" : "false"}
+                  aria-controls={`collapse${index}`}
+                >
+                  {ricetta.name}
+                </button>
+              </h2>
+              <div
+                id={`collapse${index}`}
+                className={`accordion-collapse collapse ${index === 0 ? 'show' : ''}`}
+                aria-labelledby={`heading${index}`}
+                data-bs-parent="#accordionRicette"
+              >
+                <div className="accordion-body">
+                  <h5>Gin Flavour: {ricetta.ginFlavour}</h5>
+                  <h5>Tonica: {ricetta.tonica}</h5>
+                  <h6 className="mt-3">Extras:</h6>
+                  <ul>
+                    {ricetta.extras.map((extra, extraIndex) => (
+                      <li key={extraIndex}>
+                        {extra.extraName || extra.extraId} - {extra.quantity} {extra.UM}
+                      </li>
+                    ))}
+                  </ul>
+                  <h6 className="mt-3">Garnishes:</h6>
+                  <ul>
+                    {ricetta.garnishes.map((garnish, garnishIndex) => (
+                      <li key={garnishIndex}>
+                        {garnish.guarnizioneName || garnish.guarnizioneId} - {garnish.quantity} {garnish.UM}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-3">
+                    <strong>Preparabile:</strong> {ricetta.preparabile ? "Sì" : "No"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
     </div>
-  </div>
-        </div>
-        </div>
-    )
-}
+  );
+};
 
 export default RicetteWindow;

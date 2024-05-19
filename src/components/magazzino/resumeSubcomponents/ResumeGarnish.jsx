@@ -3,9 +3,6 @@ import { useEffect } from "react"
 
 const ResumeGarnish = function (props){
 
-    useEffect(() => {
-        console.log(props)
-    }, [])
     
 
     return(
