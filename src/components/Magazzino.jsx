@@ -1,70 +1,56 @@
+import { useEffect, useState } from "react";
+import ResumeGin from './magazzino/resumeSubcomponents/ResumeGin';
+import ResumeTonica from './magazzino/resumeSubcomponents/ResumeTonica';
+import ResumeExtra from './magazzino/resumeSubcomponents/ResumeExtra';
+import ResumeGarnish from './magazzino/resumeSubcomponents/ResumeGarnish';
+import { Table } from 'react-bootstrap';
 
 const Magazzino = function () {
+    const [magazzinoCorrente, setMagazzinoCorrente] = useState([]);
+
+    useEffect(() => {
+        if (magazzinoCorrente.length === 0) {
+            fetchMagazzino();
+        }
+    }, []);
+
+    const fetchMagazzino = async function () {
+        const response = await fetch("http://localhost:3001/magazzino/resume", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            setMagazzinoCorrente(data);
+        }
+    };
+
     return (
-        <>
-            <h1>Magazzino</h1>
-            <div className="accordion full-width" id="accordionMagazzino">
-            <div className="accordion-item">
-                    <h2 className="accordion-header">
-                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Intero magazzino
-                        </button>
-                    </h2>
-                    <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionMagazzino">
-                        <div className="accordion-body">
-                            {/* <FullMagazzino/> */}
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item">
-                    <h2 className="accordion-header">
-                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Bottiglie di Gin in magazzino
-                        </button>
-                    </h2>
-                    <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionMagazzino">
-                        <div className="accordion-body">
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item">
-                    <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Toniche
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionMagazzino">
-                        <div className="accordion-body">
-                            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item">
-                    <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            Alimenti extra
-                        </button>
-                    </h2>
-                    <div id="collapseThree" className="accordion-collapse collapse" data-bs-parent="#accordionMagazzino">
-                        <div className="accordion-body">
-                            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as il showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
-                    </div>
-                </div>
-                <div className="accordion-item">
-                    <h2 className="accordion-header">
-                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                            Guarnizioni
-                        </button>
-                    </h2>
-                    <div id="collapseFour" className="accordion-collapse collapse" data-bs-parent="#accordionMagazzino">
-                        <div className="accordion-body">
-                            <strong>This is the fourth item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+        <Table striped bordered hover>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nome</th>
+                    <th>Pezzi</th>
+                    <th>Qtà</th>
+                    <th>UM</th>
+                    <th>Caratteristiche</th>
+                </tr>
+            </thead>
+            <tbody>
+                {magazzinoCorrente.length > 0 && magazzinoCorrente.map((itemMagazzino, index) => (
+                    itemMagazzino.discriminatorType === "GIN_BOTTLE" ? <ResumeGin key={index} gin={itemMagazzino} /> :
+                    itemMagazzino.discriminatorType === "TONICA" ? <ResumeTonica key={index} tonica={itemMagazzino} /> :
+                    itemMagazzino.discriminatorType === "ALIMENTO_EXTRA" ? <ResumeExtra key={index} extra={itemMagazzino} /> :
+                    itemMagazzino.discriminatorType === "GUARNIZIONE" ? <ResumeGarnish key={index} garnish={itemMagazzino} /> :
+                    <tr key={index}><td colSpan="4">Errore</td></tr>
+                ))}
+            </tbody>
+        </Table>
     );
 }
 

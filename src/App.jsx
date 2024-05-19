@@ -12,16 +12,14 @@ function App() {
 
   return (<>
       <NavBarAipiu/>
-    <div className='d-flex flex-column justify-content-center align-items-center full-width' >
-    <div className='d-flex flex-column align-items-center justify-content-center full-width' >
+
       <Routes>
       <Route path='/' element={<LoginForm/>} />
       <Route path='/admin' element={<AdminPage/>} />
       <Route path='/admin/carico' element={<CaricoWindow/>} />
       <Route path='/workerpanel' element={<WorkerPanel/>} />
       </Routes>
-    </div>
-    </div>
+
   </>
   )
 }
