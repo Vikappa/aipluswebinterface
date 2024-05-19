@@ -57,6 +57,9 @@ const RicetteWindow = () => {
                   <div className="mt-3">
                     <strong>Preparabile:</strong> {ricetta.preparabile ? "Sì" : "No"}
                   </div>
+                  <div className="mt-3">
+                    <strong>Quantità Preparabile:</strong> {ricetta.quantitaPreparabile}
+                  </div>
                 </div>
               </div>
             </div>
