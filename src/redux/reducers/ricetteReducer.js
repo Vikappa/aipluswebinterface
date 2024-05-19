@@ -1,11 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 
-const ricettario = {
-    ricette:[]
-}
 
 const initialState = {
-    ricette: ricettario
+    ricette: []
 };
 
 export const fetchRicette = createAsyncThunk(

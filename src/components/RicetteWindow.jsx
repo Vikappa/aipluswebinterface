@@ -4,10 +4,9 @@ import { fetchRicette } from "../redux/reducers/ricetteReducer.js";
 
 const RicetteWindow = () => {
   const dispatch = useDispatch();
-  const ricettario = useSelector((state) => state.ricette.ricette);
+  const ricette = useSelector((state) => state.ricette.ricette); // Directly access the array
 
   useEffect(() => {
-    console.log(ricettario)
     dispatch(fetchRicette());
   }, [dispatch]);
 
@@ -15,8 +14,8 @@ const RicetteWindow = () => {
     <div className="container my-5">
       <h1 className="mb-4">Ricette</h1>
       <div className="accordion" id="accordionRicette">
-        {ricettario &&
-          ricettario.map((ricetta, index) => (
+        {ricette &&
+          ricette.map((ricetta, index) => (
             <div className="accordion-item" key={index}>
               <h2 className="accordion-header" id={"heading" + index}>
                 <button
@@ -37,8 +36,8 @@ const RicetteWindow = () => {
                 data-bs-parent="#accordionRicette"
               >
                 <div className="accordion-body">
-                  <h5>Gin Flavour: {ricetta.ginFlavour}</h5>
-                  <h5>Tonica: {ricetta.tonica}</h5>
+                  <h5>Gin Flavour: {ricetta.ginFlavourName}</h5>
+                  <h5>Tonica: {ricetta.tonicaName}</h5>
                   <h6 className="mt-3">Extras:</h6>
                   <ul>
                     {ricetta.extras.map((extra, extraIndex) => (
