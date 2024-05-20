@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch  } from "react-redux";
 import { setCaricoType, setCaricoNote, setOperatore } from "../../redux/reducers/newCaricoReducer";
-import { fetchGinBrands } from '../../redux/reducers/ginBrandsReducer'
-import { fetchGinFlavours } from "../../redux/reducers/ginFlavourReducer";
 import RowGinBottleCarico from "./subcomponents/RowGinBottleCarico";
 import RowGuarnizioneCarico from "./subcomponents/RowGuarnizioneCarico";
 import RowTonicaBottleCarico from "./subcomponents/RowTonicaBottleCarico";
 import RowDeperibileCarico from "./subcomponents/RowDeperibileCarico";
 import { setNewItemCaricoType } from "../../redux/reducers/newItemCaricoReducer";
-import { fetchTonicBrands } from "../../redux/reducers/tonicBrandReducer";
-import { fetchFoodShortLine, fetchGarnishShortLine } from '../../redux/reducers/wharehouseReducers'
-import { fetchFlavours } from "../../redux/reducers/flavourReducer";
-import { fetchColours } from "../../redux/reducers/colourReducer";
 import ResumeRowProdotto from './subcomponents/ResumeRowProdotto'
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -59,13 +53,7 @@ const CaricoWindow = function() {
 
     useEffect(() => {
         fetchNCarico()
-        dispatch(fetchGinBrands())
-        dispatch(fetchGinFlavours())
-        dispatch(fetchTonicBrands())
-        dispatch(fetchFoodShortLine())
-        dispatch(fetchGarnishShortLine())
-        dispatch(fetchFlavours())
-        dispatch(fetchColours())
+
     }, [dispatch])
     
 

@@ -1,8 +1,7 @@
-
-const WorkerPanel = function(){
+const WorkerPanel = function() {
     return(
-    <>
-    </>
+        <>
+        </>
     )
 }
 

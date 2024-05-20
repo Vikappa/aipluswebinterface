@@ -1,15 +1,8 @@
-import { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { fetchRicette } from "../redux/reducers/ricetteReducer.js"
 import AddRicettaForm from "./AddRicettaForm.jsx"
 
 const RicetteWindow = () => {
-  const dispatch = useDispatch()
   const ricette = useSelector((state) => state.ricette.ricette)
-
-  useEffect(() => {
-    dispatch(fetchRicette())
-  }, [dispatch])
 
   return (
     <div className="container my-5">
