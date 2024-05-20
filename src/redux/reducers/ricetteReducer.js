@@ -20,6 +20,11 @@ export const fetchRicette = createAsyncThunk(
         return data;
     }
 )
+
+export const addRicetta = function(){
+    
+}
+
 const ricetteSlice = createSlice({
     name: "ricette",
     initialState,

@@ -128,7 +128,7 @@ const RowGuarnizioneCarico = function() {
 
                 <select className="form-control" onChange={handleGarnishChange}>
                     {whareHouse.garnishShortLine.map((item) => (
-                        <option key={item.id} value={item.name}>{item.name} ({item.um})</option>
+                        <option key={item.id} value={item.name}>{item.name} ({item.um}) - {item.flavour.name}, {item.color.name}</option>
                     ))}
                     <option value="aggiungi">+Aggiungi</option>
                 </select>

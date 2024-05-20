@@ -1,25 +1,26 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchRicette } from "../redux/reducers/ricetteReducer.js";
+import { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { fetchRicette } from "../redux/reducers/ricetteReducer.js"
+import AddRicettaForm from "./AddRicettaForm.jsx"
 
 const RicetteWindow = () => {
-  const dispatch = useDispatch();
-  const ricette = useSelector((state) => state.ricette.ricette); // Directly access the array
+  const dispatch = useDispatch()
+  const ricette = useSelector((state) => state.ricette.ricette)
 
   useEffect(() => {
-    dispatch(fetchRicette());
-  }, [dispatch]);
+    dispatch(fetchRicette())
+  }, [dispatch])
 
   return (
     <div className="container my-5">
-      <h1 className="mb-4">Ricette</h1>
+      <h1 className="mb-4 text-center text-primary">Ricette</h1>
       <div className="accordion" id="accordionRicette">
         {ricette &&
           ricette.map((ricetta, index) => (
             <div className="accordion-item" key={index}>
-              <h2 className="accordion-header" id={"heading" + index}>
+              <h2 className="accordion-header" id={`heading${index}`}>
                 <button
-                  className={`accordion-button ${index === 0 ? '' : 'collapsed'}`}
+                  className={`accordion-button ${index === 0 ? "" : "collapsed"}`}
                   type="button"
                   data-bs-toggle="collapse"
                   data-bs-target={`#collapse${index}`}
@@ -31,7 +32,7 @@ const RicetteWindow = () => {
               </h2>
               <div
                 id={`collapse${index}`}
-                className={`accordion-collapse collapse ${index === 0 ? 'show' : ''}`}
+                className={`accordion-collapse collapse ${index === 0 ? "show" : ""}`}
                 aria-labelledby={`heading${index}`}
                 data-bs-parent="#accordionRicette"
               >
@@ -55,7 +56,11 @@ const RicetteWindow = () => {
                     ))}
                   </ul>
                   <div className="mt-3">
-                    <strong>Preparabile:</strong> {ricetta.preparabile ? "Sì" : "No"}
+                    <strong>Preparabile:</strong> {ricetta.preparabile ? (
+                      <span className="text-success">Sì</span>
+                    ) : (
+                      <span className="text-danger">No</span>
+                    )}
                   </div>
                   <div className="mt-3">
                     <strong>Quantità Preparabile:</strong> {ricetta.quantitaPreparabile}
@@ -64,6 +69,7 @@ const RicetteWindow = () => {
               </div>
             </div>
           ))}
+        <AddRicettaForm />
       </div>
     </div>
   );

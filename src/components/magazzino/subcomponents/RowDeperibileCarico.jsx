@@ -142,7 +142,7 @@ const RowDeperibileCarico = function() {
                     ) : (
                         <select id="shortlinesextra" className="form-control me-2" value={localItem.deperibileName} onChange={handleChangeDeperibile}>
                             {whareHouse.foodShortLine.map((food) => (
-                                <option key={food.name} value={food.name}>{food.name} - {food.um} - {food.flavour.name}</option>
+                                <option key={food.name} value={food.name}>{food.name} ({food.um}) - {food.flavour.name} </option>
                             ))}
                             <option value="Aggiungi">+Aggiungi</option>
                         </select>
