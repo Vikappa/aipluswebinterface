@@ -26,9 +26,9 @@ const AddRicettaForm = () => {
   const [newGinFlavour, setNewGinFlavour] = useState("");
   const [newFlavour, setNewFlavour] = useState("")
 
-  const addRicetta = async function(ricetta){
-    const responde = await fetch("")
-  }
+  // const addRicetta = async function(ricetta){
+  //   const responde = await fetch("")
+  // }
 
 
   useEffect(() => {
