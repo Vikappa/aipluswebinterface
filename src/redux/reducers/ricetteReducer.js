@@ -9,7 +9,7 @@ export const fetchRicette = createAsyncThunk(
     "ricette/getall",
     async () => {
         const token = sessionStorage.getItem("token"); 
-        const response = await fetch("http://localhost:3001/admin/ricette/getall", {
+        const response = await fetch("http://localhost:3001/ricette/getall", {
             method: 'GET', 
             headers: {
                 'Content-Type': 'application/json',

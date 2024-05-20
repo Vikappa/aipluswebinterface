@@ -58,7 +58,7 @@ const CaricoWindow = function() {
     
     const fetchNCarico = async () => {
         try{
-            const response = await fetch('http://localhost:3001/admin/carichi/getlastcarico', {
+            const response = await fetch('http://localhost:3001/carichi/getlastcarico', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
