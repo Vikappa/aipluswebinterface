@@ -26,9 +26,20 @@ const AddRicettaForm = () => {
   const [newGinFlavour, setNewGinFlavour] = useState("");
   const [newFlavour, setNewFlavour] = useState("")
 
-  // const addRicetta = async function(ricetta){
-  //   const responde = await fetch("")
-  // }
+  const addRicetta = async function(){
+    const response = await fetch("http://localhost:3001/ricette/add", {
+      method: 'POST', 
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
+      },body: JSON.stringify(newRicetta)
+      }
+    )
+    if(response.ok){
+      const data = await response.json();
+      console.log(data)
+    }
+  }
 
 
   useEffect(() => {
@@ -155,7 +166,7 @@ const AddRicettaForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addRicetta(newRicetta)
+    addRicetta()
   };
 
   const handleGinFlavourModalClose = () => {
@@ -215,7 +226,7 @@ const AddRicettaForm = () => {
 
   const salvaRicetta = () => {
     if (isFormValid()) {
-      addRicetta(newRicetta)
+      addRicetta()
     }
   };
 

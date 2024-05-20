@@ -1,4 +1,3 @@
-import DataBaseMonitor from "./DataBaseMonitor"
 import { fetchRicette } from '../redux/reducers/ricetteReducer'
 import { fetchGinBrands } from '../redux/reducers/ginBrandsReducer'
 import { fetchGinFlavours } from "../redux/reducers/ginFlavourReducer";
@@ -8,6 +7,7 @@ import { fetchFlavours } from "../redux/reducers/flavourReducer";
 import { fetchColours } from "../redux/reducers/colourReducer";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import UsersWindows from "./UsersWindow";
 
 const AdminPage = function(){
 
@@ -26,7 +26,7 @@ useEffect(() => {
 
     return(
     <>
-    <DataBaseMonitor/>
+    <UsersWindows/>
     </>
     )
 }
