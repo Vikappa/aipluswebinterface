@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addRicetta } from "../redux/reducers/ricetteReducer.js";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
+import { fetchGinBrands } from '../redux/reducers/ginBrandsReducer.js';
 
 const AddRicettaForm = () => {
   const ginFlavours = useSelector(state => state.ginFlavours.ginFlavours);
@@ -10,22 +10,66 @@ const AddRicettaForm = () => {
   const wharehouse = useSelector(state => state.wharehouse);
   const dispatch = useDispatch();
 
-  let initialExtra = wharehouse.foodShortLine.length > 0 ? { extraId: wharehouse.foodShortLine[0].name, UM: wharehouse.foodShortLine[0].um } : { extraId: "", quantity: "", UM: "" };
-  let initialGarnish = wharehouse.garnishShortLine.length > 0 ? { guarnizioneId: wharehouse.garnishShortLine[0].name, UM: wharehouse.garnishShortLine[0].um } : { guarnizioneId: "", quantity: "", UM: "" };
+  const getInitialExtra = () => wharehouse.foodShortLine.length > 0 ? { extraId: wharehouse.foodShortLine[0].name, UM: wharehouse.foodShortLine[0].um, quantity: "" } : { extraId: "", quantity: "", UM: "" };
+  const getInitialGarnish = () => wharehouse.garnishShortLine.length > 0 ? { guarnizioneId: wharehouse.garnishShortLine[0].name, UM: wharehouse.garnishShortLine[0].um, quantity: "" } : { guarnizioneId: "", quantity: "", UM: "" };
 
   const [newRicetta, setNewRicetta] = useState({
     name: "",
-    gin_flavour_id: "",
-    flavour_tonica_id: "",
-    extras: [initialExtra],
-    garnishes: [initialGarnish]
-  })
-
+    gin_flavour_id: ginFlavours.length > 0 ? ginFlavours[0].name : "",
+    flavour_tonica_id: flavours.length > 0 ? flavours[0].name : "",
+    extras: [getInitialExtra()],
+    garnishes: [getInitialGarnish()]
+  });
 
   const [showGinFlavourModal, setShowGinFlavourModal] = useState(false);
   const [showFlavourModal, setShowFlavourModal] = useState(false);
   const [newGinFlavour, setNewGinFlavour] = useState("");
-  const [newFlavour, setNewFlavour] = useState("");
+  const [newFlavour, setNewFlavour] = useState("")
+
+  const addRicetta = async function(ricetta){
+    const responde = await fetch("")
+  }
+
+
+  useEffect(() => {
+    dispatch(fetchGinBrands());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (ginFlavours.length > 0) {
+      setNewRicetta(prevState => ({
+        ...prevState,
+        gin_flavour_id: ginFlavours[0].name
+      }));
+    }
+  }, [ginFlavours]);
+
+  useEffect(() => {
+    if (flavours.length > 0) {
+      setNewRicetta(prevState => ({
+        ...prevState,
+        flavour_tonica_id: flavours[0].name
+      }));
+    }
+  }, [flavours]);
+
+  useEffect(() => {
+    if (wharehouse.foodShortLine.length > 0) {
+      setNewRicetta(prevState => ({
+        ...prevState,
+        extras: [getInitialExtra()]
+      }));
+    }
+  }, [wharehouse.foodShortLine]);
+
+  useEffect(() => {
+    if (wharehouse.garnishShortLine.length > 0) {
+      setNewRicetta(prevState => ({
+        ...prevState,
+        garnishes: [getInitialGarnish()]
+      }));
+    }
+  }, [wharehouse.garnishShortLine]);
 
   const handleChangeGinFlavour = (e) => {
     const value = e.target.value;
@@ -35,10 +79,6 @@ const AddRicettaForm = () => {
       setNewRicetta({ ...newRicetta, gin_flavour_id: value });
     }
   };
-
-  useEffect(() => {
-    console.log(wharehouse);
-  }, [wharehouse]);
 
   const handleChangeTonicFlavour = (e) => {
     const value = e.target.value;
@@ -65,7 +105,7 @@ const AddRicettaForm = () => {
       if (value === "Aggiungi") {
         // Open modal or handle adding new garnish here
       } else {
-        const selected = wharehouse.foodShortLine.find(item => item.name === value);
+        const selected = wharehouse.garnishShortLine.find(item => item.name === value);
         garnishes[index] = { guarnizioneId: selected.name, quantity: "", UM: selected.um };
       }
       setNewRicetta({ ...newRicetta, garnishes });
@@ -86,7 +126,7 @@ const AddRicettaForm = () => {
   };
 
   const handleAddExtra = () => {
-    const newExtra = wharehouse.foodShortLine.length > 0 ? { extraId: wharehouse.foodShortLine[0].name, quantity: "", UM: wharehouse.foodShortLine[0].um } : { extraId: "", quantity: "", UM: "" };
+    const newExtra = getInitialExtra();
     setNewRicetta({
       ...newRicetta,
       extras: [...newRicetta.extras, newExtra]
@@ -94,7 +134,7 @@ const AddRicettaForm = () => {
   };
 
   const handleAddGarnish = () => {
-    const newGarnish = wharehouse.foodShortLine.length > 0 ? { guarnizioneId: wharehouse.foodShortLine[0].name, quantity: "", UM: wharehouse.foodShortLine[0].um } : { guarnizioneId: "", quantity: "", UM: "" };
+    const newGarnish = getInitialGarnish();
     setNewRicetta({
       ...newRicetta,
       garnishes: [...newRicetta.garnishes, newGarnish]
@@ -115,7 +155,7 @@ const AddRicettaForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addRicetta(newRicetta));
+    addRicetta(newRicetta)
   };
 
   const handleGinFlavourModalClose = () => {
@@ -175,7 +215,7 @@ const AddRicettaForm = () => {
 
   const salvaRicetta = () => {
     if (isFormValid()) {
-      dispatch(addRicetta(newRicetta));
+      addRicetta(newRicetta)
     }
   };
 
@@ -221,11 +261,15 @@ const AddRicettaForm = () => {
                   className="form-control me-2"
                   onChange={handleChangeGinFlavour}
                 >
-                  {ginFlavours.map((flavour) => (
-                    <option key={flavour.name} value={flavour.name}>
-                      {flavour.name}
-                    </option>
-                  ))}
+                  {ginFlavours.length === 0 ? (
+                    <option value="">Nessun flavour disponibile</option>
+                  ) : (
+                    ginFlavours.map((flavour) => (
+                      <option key={flavour.name} value={flavour.name}>
+                        {flavour.name}
+                      </option>
+                    ))
+                  )}
                   <option value="Aggiungi">+Aggiungi</option>
                 </select>
               </div>
@@ -237,11 +281,16 @@ const AddRicettaForm = () => {
                   className="form-control me-2"
                   onChange={handleChangeTonicFlavour}
                 >
-                  {flavours.map((flavour) => (
-                    <option key={flavour.name} value={flavour.name}>
-                      {flavour.name}
-                    </option>
-                  ))}
+                  {flavours.length === 0 ? (
+                    <option value="">Nessun flavour disponibile</option>
+                  ) : (
+                    flavours.map((flavour) => (
+                      <option key={flavour.name} value={flavour.name}>
+                        {flavour.name}
+                      </option>
+                    ))
+                  )}
+                  <option value="Aggiungi">+Aggiungi</option>
                 </select>
               </div>
               <div className="mb-3">
@@ -254,11 +303,15 @@ const AddRicettaForm = () => {
                       className="form-control me-2"
                       onChange={(e) => handleSelectChange(e, index, "extra")}
                     >
-                      {wharehouse.foodShortLine.map((flavour) => (
-                        <option key={flavour.name} value={flavour.name}>
-                          {flavour.name} ({flavour.um})
-                        </option>
-                      ))}
+                      {wharehouse.foodShortLine.length === 0 ? (
+                        <option value="">Nessun extra disponibile</option>
+                      ) : (
+                        wharehouse.foodShortLine.map((flavour) => (
+                          <option key={flavour.name} value={flavour.name}>
+                            {flavour.name} ({flavour.um})
+                          </option>
+                        ))
+                      )}
                       <option value="Aggiungi">+Aggiungi</option>
                     </select>
                     <input
@@ -293,11 +346,16 @@ const AddRicettaForm = () => {
                       className="form-control me-2"
                       onChange={(e) => handleSelectChange(e, index, "garnish")}
                     >
-                      {wharehouse.garnishShortLine.map((garnish) => (
-                        <option key={garnish.name} value={garnish.name}>
-                          {garnish.name} ({garnish.um})
-                        </option>
-                      ))}
+                      {wharehouse.garnishShortLine.length === 0 ? (
+                        <option value="">Nessun garnish disponibile</option>
+                      ) : (
+                        wharehouse.garnishShortLine.map((garnish) => (
+                          <option key={garnish.name} value={garnish.name}>
+                            {garnish.name} ({garnish.um})
+                          </option>
+                        ))
+                      )}
+                      <option value="Aggiungi">+Aggiungi</option>
                     </select>
                     <input
                       type="text"

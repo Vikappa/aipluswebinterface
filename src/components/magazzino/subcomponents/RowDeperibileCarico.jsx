@@ -24,8 +24,8 @@ const RowDeperibileCarico = function() {
     const [newFlavourName, setNewFlavourName] = useState("");
 
     const handleChangeNewFlavourName = (e) => {
-        setNewFlavourName(e.target.value)
-    }    
+        setNewFlavourName(e.target.value);
+    };
 
     const handleChangeTipo = (e) => {
         dispatch(setNewItemCaricoType(e.target.value));
@@ -33,8 +33,7 @@ const RowDeperibileCarico = function() {
 
     useEffect(() => {
         dispatch(setFlavour(localItem.flavour));
-    }, [localItem.tipo])
-    
+    }, [localItem.tipo]);
 
     const handleChangeDeperibile = (e) => {
         const selectedFood = e.target.value;
@@ -50,7 +49,7 @@ const RowDeperibileCarico = function() {
             const foodItem = whareHouse.foodShortLine.find(food => food.name === selectedFood);
             if (foodItem) {
                 dispatch(setUm(foodItem.um));
-                dispatch(setFlavour(foodItem.flavour.name))
+                dispatch(setFlavour(foodItem.flavour.name));
             }
         }
     };
@@ -58,7 +57,7 @@ const RowDeperibileCarico = function() {
     const handleChangeQuantita = (e) => {
         dispatch(setQuantita(e.target.value));
     };
-    
+
     const handleChangeDataScadenza = (e) => {
         dispatch(setDataScadenza(e.target.value));
     };
@@ -86,7 +85,7 @@ const RowDeperibileCarico = function() {
         });
         if (response.ok) {
             const newFlavour = await response.json();
-            dispatch(fetchFlavours())
+            dispatch(fetchFlavours());
             dispatch(setFlavour(newFlavour.name));
             setNewFlavourName("");
         } else {
@@ -107,21 +106,20 @@ const RowDeperibileCarico = function() {
 
     const insertExtra = function(){
         let updatedItem = {...localItem};
-        if(!updatedItem.deperibileName){
+        if(!updatedItem.deperibileName && whareHouse.foodShortLine.length > 0){
             updatedItem.deperibileName = whareHouse.foodShortLine[0].name;
             updatedItem.um = whareHouse.foodShortLine[0].um;
         }
-        if(!updatedItem.flavour){
+        if(!updatedItem.flavour && flavours.length > 0){
             updatedItem.flavour = flavours[0].name;
         }
-        console.log(updatedItem)
-        dispatch(pushExtraToCarico(updatedItem))
-        dispatch(resetNewItem())
-    }
+        dispatch(pushExtraToCarico(updatedItem));
+        dispatch(resetNewItem());
+    };
 
     const isFormValid= () =>{
         return localItem.quantita > 0 && localItem.data_scadenza && localItem.deperibileName && localItem.flavour && localItem.um;
-    }
+    };
 
     return (
         <>
@@ -141,9 +139,13 @@ const RowDeperibileCarico = function() {
                         </>
                     ) : (
                         <select id="shortlinesextra" className="form-control me-2" value={localItem.deperibileName} onChange={handleChangeDeperibile}>
-                            {whareHouse.foodShortLine.map((food) => (
-                                <option key={food.name} value={food.name}>{food.name} ({food.um}) - {food.flavour.name} </option>
-                            ))}
+                            {whareHouse.foodShortLine.length === 0 ? (
+                                <option value="">Nessun alimento disponibile</option>
+                            ) : (
+                                whareHouse.foodShortLine.map((food) => (
+                                    <option key={food.name} value={food.name}>{food.name} ({food.um}) - {food.flavour.name}</option>
+                                ))
+                            )}
                             <option value="Aggiungi">+Aggiungi</option>
                         </select>
                     )}
@@ -153,10 +155,14 @@ const RowDeperibileCarico = function() {
                     <input type="number" id="quantity" placeholder="Quantità" className="form-control me-2" value={localItem.quantita || ''} onChange={handleChangeQuantita}/>
                     <input type="date" id="expirationDate" className="form-control me-2" value={localItem.data_scadenza || ''} onChange={handleChangeDataScadenza} />
 
-                    <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeFlavour} disabled={!isAddingNewFood}>
-                        {flavours.map((flavour) => (
-                            <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
-                        ))}
+                    <select id="flavourSelect" value={localItem.flavour} className="form-control me-2" onChange={handleChangeFlavour} disabled={flavours.length === 0}>
+                        {flavours.length === 0 ? (
+                            <option value="">Nessun flavour disponibile</option>
+                        ) : (
+                            flavours.map((flavour) => (
+                                <option key={flavour.name} value={flavour.name}>{flavour.name}</option>
+                            ))
+                        )}
                         <option value="Aggiungi">+Aggiungi</option>
                     </select>
                 </div>
@@ -178,7 +184,7 @@ const RowDeperibileCarico = function() {
                                 className="form-control"
                                 id="newFlavourName"
                                 value={newFlavourName}
-                                onInput={(e) => handleChangeNewFlavourName(e.target.value)}
+                                onChange={handleChangeNewFlavourName}
                             />
                         </div>
                     </form>
@@ -194,6 +200,6 @@ const RowDeperibileCarico = function() {
             </Modal>
         </>
     );
-}
+};
 
 export default RowDeperibileCarico;

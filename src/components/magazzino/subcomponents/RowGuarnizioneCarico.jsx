@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { setNewItemCaricoType, setGarnishName, setFlavour, setQuantita, setUm, setColor } from "../../../redux/reducers/newItemCaricoReducer";
 import { Button, Modal } from "react-bootstrap";
 import { fetchFlavours } from "../../../redux/reducers/flavourReducer";
-import { fetchColours} from "../../../redux/reducers/colourReducer";
+import { fetchColours } from "../../../redux/reducers/colourReducer";
 import { pushGarnishToCarico } from "../../../redux/reducers/newCaricoReducer";
 
 const RowGuarnizioneCarico = function() {
@@ -46,11 +46,11 @@ const RowGuarnizioneCarico = function() {
                 dispatch(setFlavour(selectedItem.flavour.name));
             }
         }
-    }
+    };
 
     const handleChangeTipo = (e) => {
         dispatch(setNewItemCaricoType(e.target.value));
-    }
+    };
 
     const handleColorChange = (e) => {
         if (e.target.value === "aggiungi") {
@@ -58,7 +58,7 @@ const RowGuarnizioneCarico = function() {
         } else {
             dispatch(setColor(e.target.value));
         }
-    }
+    };
 
     const handleFlavourChange = (e) => {
         if (e.target.value === "aggiungi") {
@@ -66,55 +66,53 @@ const RowGuarnizioneCarico = function() {
         } else {
             dispatch(setFlavour(e.target.value));
         }
-    }
+    };
 
     const handleColorModalSubmit = async () => {
         const response = await fetch('http://localhost:3001/colors/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({ name: newColor }),
-        })
-        if(response.ok){
+        });
+        if (response.ok) {
             const data = await response.json();
-            console.log(data)
-            dispatch(fetchColours())
-            dispatch(setFlavour(newColor))
-            setShowFlavourModal(false)
+            dispatch(fetchColours());
+            dispatch(setColor(data.name));
+            setShowColorModal(false);
         } else {
-            console.log("Error adding new flavour");
+            console.log("Error adding new colour");
         }
-    }
+    };
 
     const handleFlavourModalSubmit = async () => {
         const response = await fetch('http://localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionStorage.getItem("token")}` 
+                'Authorization': `Bearer ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({ name: newFlavour }),
-        })
-        if(response.ok){
+        });
+        if (response.ok) {
             const data = await response.json();
-            console.log(data)
-            dispatch(fetchFlavours())
-            dispatch(setFlavour(newFlavour))
-            setShowFlavourModal(false)
+            dispatch(fetchFlavours());
+            dispatch(setFlavour(data.name));
+            setShowFlavourModal(false);
         } else {
             console.log("Error adding new flavour");
         }
-    }
+    };
 
     const isFormValid = () => {
-        return localItem.quantita && localItem.garnishName && localItem.um && localItem.quantita
-    }
+        return localItem.quantita && localItem.garnishName && localItem.um && localItem.color && localItem.flavour;
+    };
 
-    const insertProduct = function(){
-        dispatch(pushGarnishToCarico(localItem))
-    }
+    const insertProduct = function() {
+        dispatch(pushGarnishToCarico(localItem));
+    };
 
     return (
         <>
@@ -127,9 +125,13 @@ const RowGuarnizioneCarico = function() {
                 </select>
 
                 <select className="form-control" onChange={handleGarnishChange}>
-                    {whareHouse.garnishShortLine.map((item) => (
-                        <option key={item.id} value={item.name}>{item.name} ({item.um}) - {item.flavour.name}, {item.color.name}</option>
-                    ))}
+                    {whareHouse.garnishShortLine.length === 0 ? (
+                        <option value="">Nessuna guarnizione disponibile</option>
+                    ) : (
+                        whareHouse.garnishShortLine.map((item) => (
+                            <option key={item.id} value={item.name}>{item.name} ({item.um}) - {item.flavour.name}, {item.color.name}</option>
+                        ))
+                    )}
                     <option value="aggiungi">+Aggiungi</option>
                 </select>
             </div>
@@ -159,16 +161,24 @@ const RowGuarnizioneCarico = function() {
                 />
             </div>
             <div className="d-flex mb-3">
-                <select className="form-control mr-2" onChange={handleColorChange} value={localItem.color} disabled={!isTypingNewGarnish}>
-                    {colours.map((color) => (
-                        <option key={color.id} value={color.name}>{color.name}</option>
-                    ))}
+                <select className="form-control mr-2" onChange={handleColorChange} value={localItem.color} disabled={colours.length === 0}>
+                    {colours.length === 0 ? (
+                        <option value="">Nessun colore disponibile</option>
+                    ) : (
+                        colours.map((color) => (
+                            <option key={color.id} value={color.name}>{color.name}</option>
+                        ))
+                    )}
                     <option value="aggiungi">+Aggiungi</option>
                 </select>
-                <select className="form-control" onChange={handleFlavourChange} value={localItem.flavour} disabled={!isTypingNewGarnish}>
-                    {flavours.map((flavour) => (
-                        <option key={flavour.id} value={flavour.name}>{flavour.name}</option>
-                    ))}
+                <select className="form-control" onChange={handleFlavourChange} value={localItem.flavour} disabled={flavours.length === 0}>
+                    {flavours.length === 0 ? (
+                        <option value="">Nessun flavour disponibile</option>
+                    ) : (
+                        flavours.map((flavour) => (
+                            <option key={flavour.id} value={flavour.name}>{flavour.name}</option>
+                        ))
+                    )}
                     <option value="aggiungi">+Aggiungi</option>
                 </select>
             </div>
@@ -223,6 +233,6 @@ const RowGuarnizioneCarico = function() {
             </Modal>
         </>
     );
-}
+};
 
 export default RowGuarnizioneCarico;

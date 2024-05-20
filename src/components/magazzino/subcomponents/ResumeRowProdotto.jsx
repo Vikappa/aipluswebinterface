@@ -9,7 +9,7 @@ const ResumeRowProdotto = function(props){
     return(
         <li>
         {
-            prodotto.discriminatorType + " " + prodotto.name
+            prodotto.discriminatorString + " " + prodotto.name
         }
         </li>
     )
