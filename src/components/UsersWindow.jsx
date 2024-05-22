@@ -71,6 +71,7 @@ const UsersWindows = function () {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + sessionStorage.getItem("token")
             },
+            
             body: JSON.stringify({
                 name:name,
                 surname:surname,

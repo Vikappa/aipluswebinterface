@@ -126,7 +126,7 @@ const RowGuarnizioneCarico = function() {
 
                 <select className="form-control" onChange={handleGarnishChange}>
                     {whareHouse.garnishShortLine.length === 0 ? (
-                        <option value="">Nessuna guarnizione disponibile</option>
+                        <option key={"blankline"} value="">Nessuna guarnizione disponibile</option>
                     ) : (
                         whareHouse.garnishShortLine.map((item) => (
                             <option key={item.id} value={item.name}>{item.name} ({item.um}) - {item.flavour.name}, {item.color.name}</option>
