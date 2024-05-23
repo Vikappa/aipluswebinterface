@@ -8,6 +8,7 @@ import wharehouseReducer from '../reducers/wharehouseReducers'
 import flavourReducer from '../reducers/flavourReducer'
 import colourReducer from '../reducers/colourReducer'
 import ricetteReducer from '../reducers/ricetteReducer'
+import newGinTonicReducer from '../reducers/newGinTonicReducer'
 
 const store = configureStore({
     reducer:{
@@ -19,7 +20,8 @@ const store = configureStore({
        newItemCarico: newItemCaricoReducer,
        ginFlavours: ginFlavourReducer,
        tonicBrand: tonicBrandReducer,
-       ricette: ricetteReducer
+       ricette: ricetteReducer,
+       nuovoGinTonic: newGinTonicReducer
     }
 })
 

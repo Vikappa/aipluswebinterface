@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Form, FormControl, Button } from 'react-bootstrap';
+import { useState } from 'react'
+import { Form, FormControl, Button } from 'react-bootstrap'
 
 const RicercaRicetteWindow = () => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState('')
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
@@ -14,8 +14,7 @@ const RicercaRicetteWindow = () => {
   };
 
   const search = (query) => {
-    // Implementa la logica di ricerca qui
-    console.log("Search query:", query);
+    console.log("Search query:", query)
   };
 
   return (

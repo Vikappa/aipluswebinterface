@@ -1,14 +1,13 @@
 import { useDispatch, useSelector } from "react-redux"
 import { fetchRicette } from "../../redux/reducers/ricetteReducer"
-import Spinner1 from "../Spinner1"
 import { useEffect, useState } from "react"
-import { pushIntoNewOrdine } from "../../redux/reducers/newOrdineReduce"
 import SpinnerReloadRicette from "../../Spinners/SpinnerRelogCustomer"
+import { setNome } from "../../redux/reducers/newGinTonicReducer"
 
 const RicetteGinTonic = () => {
-    const [localOrdine, setLocalOrdine] = useState({})
     const [selectedRicetta, setSelectedRicetta] = useState(null)
     const dispatch = useDispatch()
+    const ginTonicDaInviare = useSelector(state => state.nuovoGinTonic)
 
     const ricette = useSelector(state => state.ricette.ricette)
 
@@ -24,12 +23,8 @@ const RicetteGinTonic = () => {
     }
 
     const handleOrdinaClick = (ricetta) => {
-
-        let ginTonic = {
-            name: ricetta.name,
-        }
-
-        dispatch(pushIntoNewOrdine(ginTonic))
+        console.log(ricetta)
+        dispatch(setNome(ricetta.name))
     }
 
     return (
@@ -47,13 +42,14 @@ const RicetteGinTonic = () => {
                             <h5 className="p-1 m-1">{ricetta.name}</h5>
                             {selectedRicetta === ricetta.name && (
                             <button 
+                                disabled={!ricetta.preparabile}
                                 className="btn btn-primary mt-2" 
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     handleOrdinaClick(ricetta)
                                 }}
                             >
-                                Ordina
+                                {ricetta.preparabile?"Ordina":"Non disponibile :C"}
                             </button>
                         )}
                         </div>
