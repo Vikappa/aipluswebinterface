@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import { setNewItemCaricoType, setGinBrand, setFlavour, setNome, setQuantita, resetNewItem, setDataScadenza } from "../../../redux/reducers/newItemCaricoReducer";
 import { pushTonicBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
 import { fetchTonicBrands } from "../../../redux/reducers/tonicBrandReducer";
+import { fetchFlavours } from "../../../redux/reducers/flavourReducer";
 
 const RowTonicaBottleCarico = function() {
 
@@ -125,6 +126,7 @@ const RowTonicaBottleCarico = function() {
             console.log("Error adding new flavour");
         }
 
+        dispatch(fetchFlavours())
         dispatch(setFlavour(newFlavourName))
         setShowFlavourModal(false)
     }

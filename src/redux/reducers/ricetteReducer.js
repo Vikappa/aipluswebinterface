@@ -15,9 +15,13 @@ export const fetchRicette = createAsyncThunk(
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` 
             }
-        });
-        const data = await response.json();
-        return data;
+        })
+        if(response.ok){
+            const data = await response.json();
+            return data;
+        } else{
+            return []
+        }
     }
 )
 

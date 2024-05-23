@@ -1,6 +1,7 @@
 const DashBoardGinTonic = ()=>{
     return(
         <>
+        <h3>GinTonic consigliati:</h3>
         </>
     )
 }

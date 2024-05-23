@@ -9,6 +9,9 @@ import { setNewItemCaricoType } from "../../redux/reducers/newItemCaricoReducer"
 import ResumeRowProdotto from './subcomponents/ResumeRowProdotto'
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { fetchColours } from "../../redux/reducers/colourReducer";
+import { fetchFlavours } from "../../redux/reducers/flavourReducer";
+import { fetchGinFlavours } from "../../redux/reducers/ginFlavourReducer";
 
 const CaricoWindow = function() {
 
@@ -23,8 +26,12 @@ const CaricoWindow = function() {
     const navigate = useNavigate();
 
 
+
     const handleSelectChange = (e) => {
         dispatch(setNewItemCaricoType(e.target.value)); 
+        dispatch(fetchColours())
+        dispatch(fetchFlavours())
+        dispatch(fetchGinFlavours())
     }
     
 
@@ -88,7 +95,14 @@ const CaricoWindow = function() {
             })
             if(response.ok){
                 const data = await response.json()
-                dispatch(setOperatore(data))
+                dispatch(setOperatore({
+                    id: "8b34df81-d5dc-44c4-bec8-9ba1c54f6d56",
+                    name: data.name,
+                    surname: data.surname,
+                    email: data.email,
+                    password: data.password,
+                    role: data.role
+                }))
             }
         }
             catch (error) {

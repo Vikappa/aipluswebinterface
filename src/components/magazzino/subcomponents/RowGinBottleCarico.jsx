@@ -276,6 +276,7 @@ const RowGinBottleCarico = function() {
         <>
             <div className="d-flex flex-column">
                 <div className="d-flex mb-2">
+                    
                     <select id="tipoProdotto" className="form-control me-2" value={localItem.tipo} onChange={handleChangeTipo}>
                         <option value="Bottiglia di gin">Bottiglia di Gin</option>
                         <option value="Bottiglia di tonica">Bottiglia di tonica</option>
@@ -287,7 +288,9 @@ const RowGinBottleCarico = function() {
                         {ginBrands.map((brand) => (
                             <option key={brand.name} value={brand.name}>{brand.name}</option>
                         ))}
-                        <option value="Aggiungi">+Aggiungi</option>
+                        {
+                            ginBrands.length > 0 && <option value="Aggiungi">Nessun Ginbrand registrato</option> 
+                        }
                     </select>
 
                     <input type="text" id="ginName" placeholder="Nome Gin" className="form-control me-2" value={localItem.nome || ''} onChange={handleChangeNome} />

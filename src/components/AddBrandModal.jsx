@@ -45,8 +45,17 @@ function AddBrandModal({ show, onHide, addNewBrand, addNewBrandWithImg }) {
     onHide();
   };
 
+  const handleOnHide = () =>{
+    setName("")
+    setSurcharge("")
+    setDescription("")
+    setUrl("")
+    setSelectedFile(null)
+    onHide()
+  }
+
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={handleOnHide}>
       <Modal.Header closeButton>
         <Modal.Title>Aggiungi Brand</Modal.Title>
       </Modal.Header>

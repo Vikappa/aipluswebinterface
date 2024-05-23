@@ -79,6 +79,7 @@ const RowGuarnizioneCarico = function() {
         });
         if (response.ok) {
             const data = await response.json();
+            console.log("fetcho colori")
             dispatch(fetchColours());
             dispatch(setColor(data.name));
             setShowColorModal(false);
@@ -161,7 +162,7 @@ const RowGuarnizioneCarico = function() {
                 />
             </div>
             <div className="d-flex mb-3">
-                <select className="form-control mr-2" onChange={handleColorChange} value={localItem.color} disabled={colours.length === 0}>
+                <select className="form-control mr-2" onChange={handleColorChange} value={localItem.color} disabled={colours.length === 0 || !isTypingNewGarnish}>
                     {colours.length === 0 ? (
                         <option value="">Nessun colore disponibile</option>
                     ) : (
@@ -171,7 +172,7 @@ const RowGuarnizioneCarico = function() {
                     )}
                     <option value="aggiungi">+Aggiungi</option>
                 </select>
-                <select className="form-control" onChange={handleFlavourChange} value={localItem.flavour} disabled={flavours.length === 0}>
+                <select className="form-control" onChange={handleFlavourChange} value={localItem.flavour} disabled={flavours.length === 0 || !isTypingNewGarnish}>
                     {flavours.length === 0 ? (
                         <option value="">Nessun flavour disponibile</option>
                     ) : (
