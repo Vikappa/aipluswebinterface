@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Modal from 'react-bootstrap/Modal';
 import { Button, Form, InputGroup } from "react-bootstrap";
@@ -18,7 +18,7 @@ import {
     resetImageUrl,
     setAlcPercentage
 } from "/src/redux/reducers/newItemCaricoReducer";
-import { pushGinBottleToCarico } from "../../../redux/reducers/newCaricoReducer";
+import { pushGinBottleToCarico, resetCarico } from "../../../redux/reducers/newCaricoReducer";
 import { fetchGinFlavours } from "../../../redux/reducers/ginFlavourReducer";
 import { fetchGinBrands } from "../../../redux/reducers/ginBrandsReducer";
 
@@ -66,6 +66,7 @@ const RowGinBottleCarico = function() {
         handleCloseModalAggiungiImmane();
     };
 
+    
     const handleAddImageUrl = () => {
         dispatch(deleteImageFile());
         handleCloseModalAggiungiImmane();
@@ -270,7 +271,13 @@ const RowGinBottleCarico = function() {
 
         dispatch(pushGinBottleToCarico(updatedItem));
         dispatch(resetNewItem());
-    };
+        dispatch(resetCarico())
+    }
+
+    useEffect(() => {
+        dispatch(fetchGinBrands())
+    }, [setNewItemCaricoType])
+    
 
     return (
         <>

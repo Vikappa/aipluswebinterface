@@ -25,6 +25,9 @@ const newCaricoReducer = createSlice({
             console.log(action.payload);
             state.carico = action.payload;
         },
+        resetCarico(state){
+            state.carico =initialState
+        },
         setOperatore(state, action) {
             state.carico.operatore = action.payload;
         },
@@ -109,6 +112,6 @@ const newCaricoReducer = createSlice({
     }
 })
 
-export const { setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico, pushTonicBottleToCarico, pushExtraToCarico, pushGarnishToCarico } = newCaricoReducer.actions;
+export const { resetCarico, setCarico, setCaricoType, setCaricoNote, setOperatore, pushGinBottleToCarico, pushTonicBottleToCarico, pushExtraToCarico, pushGarnishToCarico } = newCaricoReducer.actions;
 
 export default newCaricoReducer.reducer;

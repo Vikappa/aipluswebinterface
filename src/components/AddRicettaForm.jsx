@@ -27,6 +27,7 @@ const AddRicettaForm = () => {
   const [newFlavour, setNewFlavour] = useState("")
 
   const addRicetta = async function(){
+    console.log(newRicetta)
     const response = await fetch("http://localhost:3001/ricette/add", {
       method: 'POST', 
       headers: {
