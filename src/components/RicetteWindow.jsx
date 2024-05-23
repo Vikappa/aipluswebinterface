@@ -2,12 +2,23 @@ import { useSelector, useDispatch } from "react-redux"
 import AddRicettaForm from "./AddRicettaForm.jsx"
 import { useEffect } from "react";
 import { fetchRicette } from "../redux/reducers/ricetteReducer.js";
+import { fetchGinBrands } from "../redux/reducers/ginBrandsReducer.js";
+import { fetchFlavours } from "../redux/reducers/flavourReducer.js";
+import { fetchColours } from "../redux/reducers/colourReducer.js";
+import { fetchGinFlavours } from "../redux/reducers/ginFlavourReducer.js";
+import { fetchFoodShortLine, fetchGarnishShortLine } from "../redux/reducers/wharehouseReducers.js";
 
 const RicetteWindow = () => {
   const ricette = useSelector((state) => state.ricette.ricette)
   const dispatch = useDispatch()
+
   useEffect(() => {
     dispatch(fetchRicette())
+    dispatch(fetchFlavours())
+    dispatch(fetchColours())
+    dispatch(fetchGinFlavours())
+    dispatch(fetchFoodShortLine())
+    dispatch(fetchGarnishShortLine())
   }, [])
   
 
