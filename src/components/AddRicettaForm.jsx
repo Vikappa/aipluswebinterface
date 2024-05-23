@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from 'react-bootstrap/Modal';
 import { Button } from "react-bootstrap";
 import { fetchGinBrands } from '../redux/reducers/ginBrandsReducer.js';
+import { fetchRicette } from "../redux/reducers/ricetteReducer.js";
 
 const AddRicettaForm = () => {
   const ginFlavours = useSelector(state => state.ginFlavours.ginFlavours);
@@ -39,6 +40,7 @@ const AddRicettaForm = () => {
     if(response.ok){
       const data = await response.json();
       console.log(data)
+      dispatch(fetchRicette())
     }
   }
 

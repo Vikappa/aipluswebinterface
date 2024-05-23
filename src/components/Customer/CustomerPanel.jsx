@@ -2,7 +2,6 @@ import RicetteGinTonic from "./RicetteGinTonic"
 import DashBoardGinTonic from "./DashBoardGinTonic"
 import { Button } from "react-bootstrap"
 import { BiDrink } from "react-icons/bi";
-import CarrelloCustomer from "./CarrelloCustomer";
 import RicercaRicetteWindow from "./RicercaRicetteWindow";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -32,7 +31,6 @@ const CustomerPanel = function() {
 
         </div>
 
-        <CarrelloCustomer/>
      </div>
     )
 }
