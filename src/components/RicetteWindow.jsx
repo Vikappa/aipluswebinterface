@@ -54,7 +54,7 @@ const RicetteWindow = () => {
                   <ul>
                     {ricetta.extras.map((extra, extraIndex) => (
                       <li key={extraIndex}>
-                        {extra.extraName || extra.extraId} - {extra.quantity} {extra.UM}
+                        {extra.extraName || extra.extraId} - {extra.quantity} {extra.um}
                       </li>
                     ))}
                   </ul>
@@ -62,7 +62,7 @@ const RicetteWindow = () => {
                   <ul>
                     {ricetta.garnishes.map((garnish, garnishIndex) => (
                       <li key={garnishIndex}>
-                        {garnish.guarnizioneName || garnish.guarnizioneId} - {garnish.quantity} {garnish.UM}
+                        {garnish.guarnizioneName || garnish.guarnizioneId} - {garnish.quantity} {garnish.um}
                       </li>
                     ))}
                   </ul>

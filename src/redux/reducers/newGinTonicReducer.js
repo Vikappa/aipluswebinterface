@@ -38,10 +38,10 @@ const newGinTonicReducer = createSlice({
             state.tonicaFlavour = action.payload;
         },
         setExtras(state, action) {
-            state.extras = action.payload;
+            state.extras = [...action.payload]
         },
         setGarnishes(state, action) {
-            state.garnishes = action.payload;
+            state.garnishes = [...action.payload]
         },
         addExtra(state, action) {
             state.extras.push(action.payload);
