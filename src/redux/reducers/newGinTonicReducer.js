@@ -54,6 +54,9 @@ const newGinTonicReducer = createSlice({
         },
         removeGarnish(state, action) {
             state.garnishes = state.garnishes.filter(garnish => garnish !== action.payload);
+        },
+        resetGinTonic(){
+            return initialState;
         }
     }
 });
@@ -71,7 +74,8 @@ export const {
     addExtra,
     removeExtra,
     addGarnish,
-    removeGarnish 
+    removeGarnish,
+    resetGinTonic
 } = newGinTonicReducer.actions;
 
 export default newGinTonicReducer.reducer;
