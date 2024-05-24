@@ -50,16 +50,62 @@ function Ordina(props) {
     dispatch(setTonicaFlavour(selectedValue.tonicaFlavourName))
   }
 
-  const handleOrina = () => {
-    if(ginTonicDaInviare.ginBottleName===null){
-        dispatch(setGinBottleName(ginShortLine.filter((ginshortlineElement) => ginshortlineElement.ginFlavourName === ginTonicDaInviare.ginFlavourName)[0].name))
-        dispatch(setGinBottleBrandName(ginShortLine.filter((ginshortlineElement) => ginshortlineElement.ginFlavourName === ginTonicDaInviare.ginFlavourName)[0].ginBrandName))
+  const handleOrdina = async () => {
+    let updatedGinBottleName = ginTonicDaInviare.ginBottleName;
+    let updatedGinBottleBrandName = ginTonicDaInviare.ginBottleBrandName;
+    let updatedTonicaName = ginTonicDaInviare.tonicaName;
+    let updatedTonicaBrandName = ginTonicDaInviare.tonicaBrand;
+  
+    if (ginTonicDaInviare.ginBottleName === null) {
+      const gin = ginShortLine.find((ginshortlineElement) => ginshortlineElement.ginFlavourName === ginTonicDaInviare.ginFlavourName);
+      console.log(gin);
+      updatedGinBottleName = gin.name;
+      updatedGinBottleBrandName = gin.ginBrandName;
+      await dispatch(setGinBottleName(updatedGinBottleName));
+      await dispatch(setGinBottleBrandName(updatedGinBottleBrandName));
     }
-    if(ginTonicDaInviare.tonicaName === null){
-        dispatch(setTonicaName(tonicShortLine.filter((tonicShortLineElement) => tonicShortLineElement.tonicaFlavourName === ginTonicDaInviare.tonicaFlavour)[0].tonicaName))
-        dispatch(setTonicaBrand(tonicShortLine.filter((tonicShortLineElement) => tonicShortLineElement.tonicaFlavourName === ginTonicDaInviare.tonicaFlavour)[0].tonicaBrandName))
+  
+    if (ginTonicDaInviare.tonicaName === null) {
+      const tonica = tonicShortLine.find((tonicShortLineElement) => tonicShortLineElement.tonicaFlavourName === ginTonicDaInviare.tonicaFlavour);
+      console.log(tonica);
+      updatedTonicaName = tonica.name;
+      updatedTonicaBrandName = tonica.tonicaBrandName;
+      await dispatch(setTonicaName(updatedTonicaName));
+      await dispatch(setTonicaBrand(updatedTonicaBrandName));
     }
+  
+    postGinTonic({
+      ...ginTonicDaInviare,
+      ginBottleName: updatedGinBottleName,
+      ginBottleBrandName: updatedGinBottleBrandName,
+      tonicaName: updatedTonicaName,
+      tonicaBrand: updatedTonicaBrandName
+    });
   }
+  
+
+  const postGinTonic = async (data) => {
+    const response = await fetch('http://localhost:3001/ordina/ordina', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        gintonic:data
+      })
+    });
+  
+    if (!response.ok) {
+      throw new Error('Errore POST Ordine');
+    }
+  
+    const responseData = await response.json();
+    handleClose();
+    console.log(responseData);
+  }
+  
+  
 
   return (
     <>
@@ -120,7 +166,7 @@ function Ordina(props) {
         
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleOrina}>
+          <Button variant="primary" onClick={handleOrdina}>
             Ordina ({prezzoTotale}€)
           </Button>
           <Button variant="secondary" onClick={handleClose}>
