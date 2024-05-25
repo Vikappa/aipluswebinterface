@@ -271,7 +271,6 @@ const RowGinBottleCarico = function() {
 
         dispatch(pushGinBottleToCarico(updatedItem));
         dispatch(resetNewItem());
-        dispatch(resetCarico())
     }
 
     useEffect(() => {

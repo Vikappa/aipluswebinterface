@@ -25,8 +25,12 @@ const newCaricoReducer = createSlice({
             console.log(action.payload);
             state.carico = action.payload;
         },
-        resetCarico(state){
-            state.carico =initialState
+        resetCarico(state) {
+            state.carico = {
+                operatore: null,
+                data: [],
+                note: ""
+            };
         },
         setOperatore(state, action) {
             state.carico.operatore = action.payload;

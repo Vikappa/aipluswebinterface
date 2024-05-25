@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch  } from "react-redux";
-import { setCaricoType, setCaricoNote, setOperatore } from "../../redux/reducers/newCaricoReducer";
+import { setCaricoType, setCaricoNote, setOperatore, resetCarico } from "../../redux/reducers/newCaricoReducer";
 import RowGinBottleCarico from "./subcomponents/RowGinBottleCarico";
 import RowGuarnizioneCarico from "./subcomponents/RowGuarnizioneCarico";
 import RowTonicaBottleCarico from "./subcomponents/RowTonicaBottleCarico";
@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchColours } from "../../redux/reducers/colourReducer";
 import { fetchFlavours } from "../../redux/reducers/flavourReducer";
 import { fetchGinFlavours } from "../../redux/reducers/ginFlavourReducer";
+import { fetchTonicBrands } from "../../redux/reducers/tonicBrandReducer";
 
 const CaricoWindow = function() {
 
@@ -23,8 +24,7 @@ const CaricoWindow = function() {
     let note = useSelector(state => state.newCarico.carico.note)
     let carrello = useSelector(state => state.newCarico.carico.data)
     const [nCarico, setNCarico] = useState(null);
-    const navigate = useNavigate();
-
+    const navigate = useNavigate();    
 
 
     const handleSelectChange = (e) => {
@@ -32,6 +32,7 @@ const CaricoWindow = function() {
         dispatch(fetchColours())
         dispatch(fetchFlavours())
         dispatch(fetchGinFlavours())
+        dispatch(fetchTonicBrands())
     }
     
 
@@ -119,7 +120,7 @@ const CaricoWindow = function() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
             },
             body: JSON.stringify({
                 operatore: user, 
@@ -130,15 +131,14 @@ const CaricoWindow = function() {
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-            navigate(-1)
+            navigate(-1);
+            dispatch(resetCarico())
         } else {
             console.error("Failed to add carico");
         }
     }
+    
 
-    useEffect(() => {
-        console.log(carrello)
-    }, [])
     
     
 
@@ -171,7 +171,7 @@ const CaricoWindow = function() {
         
         <ul className="full-width" style={{ listStyle: 'none', padding: '0' }}>
 
-            {itemsList.map((item, index) => (
+            {itemsList && itemsList.map((item, index) => (
                 <ResumeRowProdotto item={item} key={index}/>
             ))}
 
@@ -208,7 +208,7 @@ const CaricoWindow = function() {
                 onChange={(e) => handleNoteChange(e)}
                 />
             </div>
-            <Button disabled={carrello.length<=0} onClick={sendCarico}>Invia</Button>
+            <Button disabled={carrello.length === 0} onClick={sendCarico}>Invia</Button>
         </>
     );
 }

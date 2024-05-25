@@ -4,8 +4,25 @@ const initialState = {
     foodShortLine: [],
     garnishShortLine: [],
     tonicShortLine: [],
-    ginShortLine: []
+    ginShortLine: [],
+    ordini: []
 }
+
+export const fetchOrdini = createAsyncThunk(
+    "ordini/all",
+    async () => {
+        const token = sessionStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/ordina/getall", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const data = await response.json()
+        return data;
+    }
+)
 
 export const fetchFoodShortLine = createAsyncThunk(
     "deperibile/getinstorelist",

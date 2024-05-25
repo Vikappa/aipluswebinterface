@@ -326,7 +326,6 @@ const AddRicettaForm = () => {
                           </option>
                         ))
                       )}
-                      <option value="Aggiungi">+Aggiungi</option>
                     </select>
                     <input
                       type="text"
@@ -369,7 +368,6 @@ const AddRicettaForm = () => {
                           </option>
                         ))
                       )}
-                      <option value="Aggiungi">+Aggiungi</option>
                     </select>
                     <input
                       type="text"

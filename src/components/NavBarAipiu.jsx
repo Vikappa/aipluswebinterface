@@ -3,10 +3,11 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { Button } from 'react-bootstrap';
 
 function NavBarAipiu() {
   const location = useLocation();
-  const isHome = location.pathname === "/"
+  const isHome = location.pathname === "/" || location.pathname === "/workerpanel"
   const isAdmin = location.pathname === "/admin" || "admin/magazzino"
   const navigate = useNavigate()
   const logOut = function(){
@@ -22,6 +23,9 @@ function NavBarAipiu() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
+            {
+              location.pathname === "/workerpanel" && <Button variant='secondary' onClick={logOut}>Logout</Button>
+            }
             {!isHome && (
               <>
                 <Nav.Link as={Link} to="/admin">Home</Nav.Link>
