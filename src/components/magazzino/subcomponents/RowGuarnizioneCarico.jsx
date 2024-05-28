@@ -69,7 +69,7 @@ const RowGuarnizioneCarico = function() {
     };
 
     const handleColorModalSubmit = async () => {
-        const response = await fetch('http://localhost:3001/colors/add', {
+        const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/colors/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const RowGuarnizioneCarico = function() {
     };
 
     const handleFlavourModalSubmit = async () => {
-        const response = await fetch('http://localhost:3001/flavours/add', {
+        const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

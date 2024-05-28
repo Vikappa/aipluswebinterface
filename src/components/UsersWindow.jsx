@@ -26,7 +26,7 @@ const UsersWindows = function () {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('http://localhost:3001/users/getall', {
+            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/users/getall', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const UsersWindows = function () {
         e.preventDefault();
         console.log({ name, surname, email, role, password })
 
-        const response = await fetch('http://localhost:3001/users', {
+        const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
