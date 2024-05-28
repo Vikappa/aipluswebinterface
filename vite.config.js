@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => {
     return {
         plugins: [react()],
         define: {
-            'import.meta.env': env,
+            'process.env': env, 
         },
         build: {
             outDir: 'dist',
