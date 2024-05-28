@@ -8,7 +8,7 @@ export const fetchGinBrands = createAsyncThunk(
     "ginbrand/getall",
     async () => {
         const token = sessionStorage.getItem("token"); 
-        const response = await fetch("http://localhost:3001/ginbrand/getall", {
+        const response = await fetch("https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ginbrand/getall", {
             method: 'GET', 
             headers: {
                 'Content-Type': 'application/json',
@@ -27,7 +27,6 @@ const ginBrandSlice = createSlice({
         builder.addCase(fetchGinBrands.fulfilled, (state, action) => {
             state.ginbrands = action.payload;
         });
-        // You can add more handlers here if there are other thunks or actions
     }
 });
 

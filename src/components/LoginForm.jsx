@@ -3,8 +3,6 @@ import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const LoginForm = function () {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,7 +10,7 @@ const LoginForm = function () {
 
     const customerLogin = async (tavnum) => {
         try {
-            const response = await fetch(`${API_URL}/customer/createcustomer`, {
+            const response = await fetch(`https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,10 +36,9 @@ const LoginForm = function () {
     };
 
     const fetchLogin = async () => {
-        console.log('API_URL:', API_URL);
-        console.log('Full URL:', `${API_URL}/login`);
+
                 try {
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetch(`https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
