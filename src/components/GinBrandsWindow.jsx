@@ -12,7 +12,7 @@ const GinBrandsWindow = () => {
 
     const fetchGinBrands = async () => {
         try {
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/ginbrand/getall', {
+            const response = await fetch('http://localhost:3001/ginbrand/getall', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const GinBrandsWindow = () => {
         }
 
         try {
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/ginbrand', {
+            const response = await fetch('http://localhost:3001/ginbrand', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ const GinBrandsWindow = () => {
         formData.append('imageFile', image);
 
         try {
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/ginbrand/uploadimage', {
+            const response = await fetch('http://localhost:3001/ginbrand/uploadimage', {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + sessionToken,

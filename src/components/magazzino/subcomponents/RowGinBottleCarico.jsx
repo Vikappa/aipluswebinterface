@@ -147,7 +147,7 @@ const RowGinBottleCarico = function() {
             formData.append('sovrapprezzo', surcharge);
 
             try {
-                const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/ginbrand/uploadimage', {
+                const response = await fetch('http://localhost:3001/ginbrand/uploadimage', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
@@ -167,7 +167,7 @@ const RowGinBottleCarico = function() {
         }
 
         try {
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/ginbrand', {
+            const response = await fetch('http://localhost:3001/ginbrand', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -190,7 +190,7 @@ const RowGinBottleCarico = function() {
 
     const handleGinFlavourModalSubmit = async () => {
         try {
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/ginflavours/add', { 
+            const response = await fetch('http://localhost:3001/ginflavours/add', { 
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
@@ -246,7 +246,7 @@ const RowGinBottleCarico = function() {
             const token = sessionStorage.getItem('token');
 
             try {
-                const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/uploadimg', { 
+                const response = await fetch('http://localhost:3001/uploadimg', { 
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`

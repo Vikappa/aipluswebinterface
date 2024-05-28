@@ -8,7 +8,7 @@ export const fetchColours = createAsyncThunk(
     "colours/getall",
     async () => {
         const token = sessionStorage.getItem("token")
-        const response = await fetch("https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/colors/getall", {
+        const response = await fetch("http://localhost:3001/colors/getall", {
             method: 'GET', 
             headers: {
                 'Content-Type': 'application/json',

@@ -85,7 +85,7 @@ const RowTonicaBottleCarico = function() {
 
     const handleTonicBrandModalSubmit = async () => {
         
-        const response = await fetch("https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/brandtonica/add", {
+        const response = await fetch("http://localhost:3001/brandtonica/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -111,7 +111,7 @@ const RowTonicaBottleCarico = function() {
     
 
     const handleFlavourModalSubmit = async () => {
-        const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer/flavours/add', {
+        const response = await fetch('http://localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
