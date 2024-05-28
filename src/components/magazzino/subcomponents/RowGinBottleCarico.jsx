@@ -38,11 +38,6 @@ const RowGinBottleCarico = function() {
     const [useUrl, setUseUrl] = useState(false);
     const [url, setUrl] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
-    const fileInputRef = useRef(null);
-
-    const handleChangeUrl = (e) => {
-        dispatch(setImageUrl(e.target.value));
-    };
 
     const handleChangeTipo = (e) => {
         dispatch(setNewItemCaricoType(e.target.value));
@@ -66,12 +61,6 @@ const RowGinBottleCarico = function() {
         handleCloseModalAggiungiImmane();
     };
 
-    
-    const handleAddImageUrl = () => {
-        dispatch(deleteImageFile());
-        handleCloseModalAggiungiImmane();
-    };
-
     const handleChangeQuantita = (e) => {
         const value = e.target.value === '' ? null : Number(e.target.value);
         if (value === null || value >= 0) {
@@ -92,10 +81,6 @@ const RowGinBottleCarico = function() {
 
     const handleChangeDataScadenza = (e) => {
         dispatch(setDataScadenza(e.target.value));
-    };
-
-    const handleImageUpload = () => {
-        setShowModaleImmagine(true);
     };
 
     const handleChangeGinBrand = (e) => {
@@ -128,11 +113,6 @@ const RowGinBottleCarico = function() {
     const handleGinFlavourModalClose = () => {
         setShowGinFlavourModal(false);
     }
-
-    const handleAnnulla = () => {
-        dispatch(resetImageUrl());
-        dispatch(deleteImageFile());
-    };
 
     const handleGinBrandModalSubmit = async (e) => {
         e.preventDefault();
@@ -321,55 +301,9 @@ const RowGinBottleCarico = function() {
                 </div>
                 
                 <div className="d-flex mb-2">
-                    <button className="btn btn-primary me-2" onClick={handleImageUpload}>
-                        {localItem.imageUrl === undefined && localItem.immagine === undefined ? "Carica immagine" : "Modifica immagine"}
-                    </button>
-
                     <button className="btn btn-success" onClick={insertProduct} disabled={!isFormValid()}>Ok</button>
                 </div>
             </div>
-
-            {/* Modale per immagine */}
-            <Modal show={showModaleImmagine} onHide={handleCloseModalAggiungiImmane}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Inserisci immagine</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="mb-3">
-                        <label htmlFor="file-upload" className="form-label">Carica immagine</label>
-                        <button className="btn btn-outline-primary w-100" onClick={() => fileInputRef.current.click()}>
-                            Seleziona File
-                        </button>
-                        <input 
-                            type="file"
-                            ref={fileInputRef}
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            style={{ display: 'none' }}
-                            id="file-upload"
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="url" className="form-label">Inserisci URL</label>
-                        <div className="input-group">
-                            <input 
-                                type="text" 
-                                id="url" 
-                                className="form-control" 
-                                placeholder="https://url-tua-immagine.png" 
-                                value={localItem.imageUrl || ''}  
-                                onChange={handleChangeUrl}
-                            />
-                            <Button variant="outline-primary" onClick={handleAddImageUrl}>Ok</Button>
-                        </div>
-                    </div>            
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleAnnulla}>
-                        Annulla
-                    </Button>
-                </Modal.Footer>
-            </Modal>
 
             {/* Modale per Gin Brand */}
             <Modal show={showGinBrandModal} onHide={handleGinBrandModalClose}>

@@ -106,6 +106,9 @@ const wharehouseSlice = createSlice({
         builder.addCase(fetchTonicaBottleShortLine.fulfilled, (state, action) => {
             state.tonicShortLine = action.payload
         })
+        builder.addCase(fetchOrdini.fulfilled, (state, action) => {
+            state.ordini = action.payload
+        })
     }
 })
 

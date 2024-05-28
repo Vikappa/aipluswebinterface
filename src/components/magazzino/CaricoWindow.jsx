@@ -148,7 +148,7 @@ const CaricoWindow = function() {
 
     return (
         <>
-        <div style={{ display: 'flex', justifyContent: 'center' }} className="full-width px-1" >
+        <div style={{ display: 'flex', justifyContent: 'center' }} className="full-width  p-2" >
             <form style={{ display: 'flex', width: '100%', flexWrap: 'wrap', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
                     <label htmlFor="inputncarico" style={{ marginRight: '10px' }}>N° Carico:</label>
@@ -167,9 +167,9 @@ const CaricoWindow = function() {
             </form>
         </div>
 
-        <h1 className="full-width" >Lista prodotti</h1>
+        <h1 className="p-2 full-width" >Lista prodotti</h1>
         
-        <ul className="full-width" style={{ listStyle: 'none', padding: '0' }}>
+        <ul className="full-width p-2" style={{ listStyle: 'none', padding: '0' }}>
 
             {itemsList && itemsList.map((item, index) => (
                 <ResumeRowProdotto item={item} key={index}/>
@@ -208,7 +208,7 @@ const CaricoWindow = function() {
                 onChange={(e) => handleNoteChange(e)}
                 />
             </div>
-            <Button disabled={carrello.length === 0} onClick={sendCarico}>Invia</Button>
+            <Button className="m-3" disabled={carrello.length === 0} onClick={sendCarico}>Invia</Button>
         </>
     );
 }
