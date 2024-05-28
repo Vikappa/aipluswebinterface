@@ -3,6 +3,8 @@ import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LoginForm = function () {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -10,7 +12,7 @@ const LoginForm = function () {
 
     const customerLogin = async (tavnum) => {
         try {
-            const response = await fetch('http://localhost:3001/customer/createcustomer', {
+            const response = await fetch(`${API_URL}/customer/createcustomer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
