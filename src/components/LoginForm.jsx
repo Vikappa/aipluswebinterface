@@ -38,8 +38,9 @@ const LoginForm = function () {
     };
 
     const fetchLogin = async () => {
-        console.log("API_URL:", API_URL);  
-        try {
+        console.log('API_URL:', API_URL);
+        console.log('Full URL:', `${API_URL}/login`);
+                try {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
