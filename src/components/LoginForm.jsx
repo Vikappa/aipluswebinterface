@@ -39,7 +39,7 @@ const LoginForm = function () {
 
     const fetchLogin = async () => {
         try {
-            const response = await fetch(`${API_URL}/login`, {
+            const response = await fetch(`https:/aipluswebserver-vincenzocostantini-082c8784.koyeb.applogin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
