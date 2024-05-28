@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React,{ useEffect, useState } from "react";
 import ResumeGin from './magazzino/resumeSubcomponents/ResumeGin';
 import ResumeTonica from './magazzino/resumeSubcomponents/ResumeTonica';
 import ResumeExtra from './magazzino/resumeSubcomponents/ResumeExtra';

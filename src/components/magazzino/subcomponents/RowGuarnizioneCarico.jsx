@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { setNewItemCaricoType, setGarnishName, setFlavour, setQuantita, setUm, setColor } from "../../../redux/reducers/newItemCaricoReducer";
 import { Button, Modal } from "react-bootstrap";
 import { fetchFlavours } from "../../../redux/reducers/flavourReducer";

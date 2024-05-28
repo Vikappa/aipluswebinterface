@@ -6,7 +6,7 @@ import { fetchFoodShortLine, fetchGarnishShortLine } from '../redux/reducers/wha
 import { fetchFlavours } from "../redux/reducers/flavourReducer";
 import { fetchColours } from "../redux/reducers/colourReducer";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import React,{ useEffect } from "react";
 import UsersWindows from "./UsersWindow";
 
 const AdminPage = function(){

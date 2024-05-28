@@ -8,6 +8,8 @@ import {
 } from "../../../redux/reducers/newItemCaricoReducer";
 import { pushExtraToCarico } from "../../../redux/reducers/newCaricoReducer";
 import { fetchFlavours } from "../../../redux/reducers/flavourReducer";
+import React from "react"
+
 
 const RowDeperibileCarico = function() {
 

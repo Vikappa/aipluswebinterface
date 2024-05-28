@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { fetchRicette } from "../../redux/reducers/ricetteReducer"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import SpinnerReloadRicette from "../../Spinners/SpinnerRelogCustomer"
 import { setExtras, setGarnishes, setGinFlavourName, setNome, setTonicaFlavour } from "../../redux/reducers/newGinTonicReducer"
 import Ordina from "./Ordina"

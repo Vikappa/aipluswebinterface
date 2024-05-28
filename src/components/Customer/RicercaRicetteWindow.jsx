@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Form, FormControl, Button } from 'react-bootstrap'
+import React from "react";
 
 const RicercaRicetteWindow = () => {
   const [query, setQuery] = useState('')

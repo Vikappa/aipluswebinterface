@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import AddRicettaForm from "./AddRicettaForm.jsx"
-import { useEffect } from "react";
+import React,{ useEffect } from "react";
 import { fetchRicette } from "../redux/reducers/ricetteReducer.js";
 import { fetchGinBrands } from "../redux/reducers/ginBrandsReducer.js";
 import { fetchFlavours } from "../redux/reducers/flavourReducer.js";

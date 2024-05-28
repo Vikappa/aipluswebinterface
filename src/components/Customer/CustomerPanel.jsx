@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchRicette } from "../../redux/reducers/ricetteReducer";
 import {fetchFlavours} from "../../redux/reducers/flavourReducer"
+import React from "react";
 
 
 const CustomerPanel = function() {
