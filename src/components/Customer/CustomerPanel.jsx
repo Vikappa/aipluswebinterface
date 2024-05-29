@@ -20,8 +20,8 @@ const CustomerPanel = function() {
     
     return (
     <div className="customerPanel h-100"> 
-            <DashBoardGinTonic/>
-            <RicercaRicetteWindow/>
+            {/* <DashBoardGinTonic/>
+            <RicercaRicetteWindow/> */}
             <RicetteGinTonic/>
 
         <div className="d-flex">

@@ -62,7 +62,7 @@ const RicetteGinTonic = () => {
 
     return (
         <>
-        <h3>Intero menu:</h3>
+        <h3>Menu:</h3>
             {ricette.length>0 ? 
                 ricette.map((ricetta, index) => (
                     <div 
