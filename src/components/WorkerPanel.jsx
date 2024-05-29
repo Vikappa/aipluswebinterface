@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrdini } from "../redux/reducers/wharehouseReducers";
+import sadCatImage from '../assets/noOrdini.png'
 
 const WorkerPanel = function() {
     const dispatch = useDispatch();
@@ -28,7 +29,7 @@ const WorkerPanel = function() {
 
     const updateOrdineStatus = async (ordineId) => {
         const response = await fetch(
-            `https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ordini/preparato`,
+            `https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ordina/preparato`,
             {
                 method: "POST",
                 headers: {
@@ -36,14 +37,14 @@ const WorkerPanel = function() {
                     "Authorization": `Bearer ${sessionStorage.getItem("token")}`
                 },
                 body: JSON.stringify({
-                     ordineId
+                    ordineId: ordineId
                 })
             }
         )
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-            dispatch(fetchOrdini());
+            await dispatch(fetchOrdini());
         } else {
             console.log("error");
         }
@@ -125,7 +126,12 @@ const WorkerPanel = function() {
                             <p><strong>Prezzo:</strong> €{ordine.ginTonic?.finalPrice}</p>
                         </div>
                     );
-                }) : <p>No orders available.</p>}
+                }) : 
+                <div className="d-flex flex-column align-items-center justify-content-center">
+                    <p>Nessun ordine</p>
+                    <img className="mx-5 rounded-4" height={"200px"} src={sadCatImage}/>
+                </div>
+                }
             </div>
         </>
     );

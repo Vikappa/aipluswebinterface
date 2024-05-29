@@ -144,7 +144,7 @@ const RowDeperibileCarico = function() {
                             {whareHouse.foodShortLine.length === 0 ? (
                                 <option value="">Nessun alimento disponibile</option>
                             ) : (
-                                whareHouse.foodShortLine.map((food) => (
+                                whareHouse.foodShortLine && whareHouse.foodShortLine.map((food) => (
                                     <option key={food.name} value={food.name}>{food.name} ({food.um}) - {food.flavour.name}</option>
                                 ))
                             )}

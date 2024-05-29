@@ -10,44 +10,56 @@ import { resetGinTonic, setGinBottleBrandName, setGinBottleName, setGinFlavourNa
 
 function Ordina(props) {
 
-    const setShow = (boolean) => {
-      props.showController(boolean);
+  const setShow = (boolean) => {
+    props.showController(boolean);
+  }
+
+  const handleClose = () => {
+    dispatch(resetGinTonic());
+    setShow(false);
+  }
+
+  const dispatch = useDispatch();
+  const ginTonicDaInviare = useSelector((state) => state.nuovoGinTonic);
+  const ginShortLine = useSelector((state) => state.wharehouse.ginShortLine);
+  const tonicShortLine = useSelector((state) => state.wharehouse.tonicShortLine);
+  const ginBrands = useSelector((state) => state.ginBrands.ginbrands);
+
+  const base_price = 7;
+  const [prezzoTotale, setPrezzoTotale] = useState(base_price);
+
+  const updateBasePrice = () => {
+    if (ginBrands) {
+      const extrasPrice = ginTonicDaInviare.extras.length * 0.5;
+      const garnishesPrice = ginTonicDaInviare.garnishes.length * 0.25;
+      const selectedGinBrand = ginBrands.find(brand => brand.name === ginTonicDaInviare.ginBottleBrandName) 
+      const brandSurcharge = selectedGinBrand ? selectedGinBrand.sovrapprezzo : ginBrands[0].sovrapprezzo
+      setPrezzoTotale(base_price + extrasPrice + garnishesPrice + brandSurcharge);
     }
-
-    const handleClose = () => {
-        dispatch(resetGinTonic())
-        setShow(false)
-    }
-
-    const dispatch = useDispatch();
-    const ginTonicDaInviare = useSelector((state) => state.nuovoGinTonic);
-    const ginShortLine = useSelector((state) => state.wharehouse.ginShortLine);
-    const tonicShortLine = useSelector((state) => state.wharehouse.tonicShortLine);
-    const [selectedGin, setSelectedGin] = useState(null);
-    const [selectedTonica, setSelectedTonica] = useState(null)
-
-    let prezzoTotale = 7
+  };
 
   useEffect(() => {
     dispatch(fetchGinBrands());
     dispatch(fetchGinBottleShortLine());
     dispatch(fetchTonicaBottleShortLine());
-  }, [dispatch])
+  }, [dispatch]);
+
+  useEffect(() => {
+    updateBasePrice();
+  }, [ginTonicDaInviare, ginBrands]);
 
   const handleGinChange = (e) => {
     const selectedValue = JSON.parse(e.target.value);
-    setSelectedGin(selectedValue);
-    dispatch(setGinBottleName(selectedValue.name))
-    dispatch(setGinBottleBrandName(selectedValue.ginBrandName))
-    dispatch(setGinFlavourName(selectedValue.ginFlavourName))
+    dispatch(setGinBottleName(selectedValue.name));
+    dispatch(setGinBottleBrandName(selectedValue.ginBrandName));
+    dispatch(setGinFlavourName(selectedValue.ginFlavourName));
   }
 
   const handleTonicaChange = (e) => {
-    const selectedValue = JSON.parse(e.target.value)
-    setSelectedTonica(selectedValue)
-    dispatch(setTonicaName(selectedValue.name))
-    dispatch(setTonicaBrand(selectedValue.tonicaBrandName))
-    dispatch(setTonicaFlavour(selectedValue.tonicaFlavourName))
+    const selectedValue = JSON.parse(e.target.value);
+    dispatch(setTonicaName(selectedValue.name));
+    dispatch(setTonicaBrand(selectedValue.tonicaBrandName));
+    dispatch(setTonicaFlavour(selectedValue.tonicaFlavourName));
   }
 
   const handleOrdina = async () => {
@@ -55,25 +67,23 @@ function Ordina(props) {
     let updatedGinBottleBrandName = ginTonicDaInviare.ginBottleBrandName;
     let updatedTonicaName = ginTonicDaInviare.tonicaName;
     let updatedTonicaBrandName = ginTonicDaInviare.tonicaBrand;
-  
+
     if (ginTonicDaInviare.ginBottleName === null) {
       const gin = ginShortLine.find((ginshortlineElement) => ginshortlineElement.ginFlavourName === ginTonicDaInviare.ginFlavourName);
-      console.log(gin);
       updatedGinBottleName = gin.name;
       updatedGinBottleBrandName = gin.ginBrandName;
       await dispatch(setGinBottleName(updatedGinBottleName));
       await dispatch(setGinBottleBrandName(updatedGinBottleBrandName));
     }
-  
+
     if (ginTonicDaInviare.tonicaName === null) {
       const tonica = tonicShortLine.find((tonicShortLineElement) => tonicShortLineElement.tonicaFlavourName === ginTonicDaInviare.tonicaFlavour);
-      console.log(tonica);
       updatedTonicaName = tonica.name;
       updatedTonicaBrandName = tonica.tonicaBrandName;
       await dispatch(setTonicaName(updatedTonicaName));
       await dispatch(setTonicaBrand(updatedTonicaBrandName));
     }
-  
+
     postGinTonic({
       ...ginTonicDaInviare,
       ginBottleName: updatedGinBottleName,
@@ -82,7 +92,6 @@ function Ordina(props) {
       tonicaBrand: updatedTonicaBrandName
     });
   }
-  
 
   const postGinTonic = async (data) => {
     const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ordina/ordina', {
@@ -92,20 +101,18 @@ function Ordina(props) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        gintonic:data
+        gintonic: data
       })
     });
-  
+
     if (!response.ok) {
       throw new Error('Errore POST Ordine');
     }
-  
+
     const responseData = await response.json();
     handleClose();
     console.log(responseData);
   }
-  
-  
 
   return (
     <>
@@ -114,7 +121,7 @@ function Ordina(props) {
           <Modal.Title>Personalizza il tuo ordine</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form.Label className='mb-0 '>Gin: {ginTonicDaInviare.ginFlavourName}</Form.Label>
+          <Form.Label className='mb-0'>Gin: {ginTonicDaInviare.ginFlavourName}</Form.Label>
           <Form.Group as="select" className="form-control me-2" onChange={handleGinChange}>
             {ginShortLine.length > 0 &&
               ginShortLine
@@ -137,33 +144,26 @@ function Ordina(props) {
                   </option>
                 ))}
           </Form.Group>
-        <div className="">
-            {
-                ginTonicDaInviare.extras.length>0 &&
-                <>
+          <div className="">
+            {ginTonicDaInviare.extras.length > 0 &&
+              <>
                 <h5 className='p-1 m-0'>Alimenti extra</h5>
-                    {
-                        ginTonicDaInviare.extras.map((extra, index) => (
-                            <p className='p-1 m-0' key={index}>{extra.extraName} - {extra.quantity}{extra.um}</p>
-                        ))
-                    }
-                </>
+                {ginTonicDaInviare.extras.map((extra, index) => (
+                  <p className='p-1 m-0' key={index}>{extra.extraName} - {extra.quantity}{extra.um}</p>
+                ))}
+              </>
             }
-        {
-            ginTonicDaInviare.garnishes.length>0 &&
-            <>
-            <h5 className='p-1 m-0'>Guarnizioni</h5>
-            <div className="d-flex flex-column ">
-                    {
-                        ginTonicDaInviare.garnishes.map((garnish, index) => (
-                            <p className='p-1 m-0' key={index}>{garnish.garnishName} - {garnish.quantity}{garnish.um}</p>
-                        ))
-                    }
+            {ginTonicDaInviare.garnishes.length > 0 &&
+              <>
+                <h5 className='p-1 m-0'>Guarnizioni</h5>
+                <div className="d-flex flex-column">
+                  {ginTonicDaInviare.garnishes.map((garnish, index) => (
+                    <p className='p-1 m-0' key={index}>{garnish.garnishName} - {garnish.quantity}{garnish.um}</p>
+                  ))}
                 </div>
-            </>
+              </>
             }
-        </div>
-        
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={handleOrdina}>
@@ -178,4 +178,5 @@ function Ordina(props) {
   );
 }
 
-export default Ordina
+export default Ordina;
+

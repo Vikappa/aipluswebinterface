@@ -25,10 +25,6 @@ const CustomerPanel = function() {
             <RicetteGinTonic/>
 
         <div className="d-flex">
-                
-            <button className="mx-auto p-2 my-3 d-flex align-items-center gap-2 btn btn-emphasized shadow rounded-pill">
-                <BiDrink />Crea il tuo GinTonic!
-            </button> 
 
         </div>
 

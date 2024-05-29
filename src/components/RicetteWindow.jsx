@@ -21,6 +21,11 @@ const RicetteWindow = () => {
     dispatch(fetchGarnishShortLine())
   }, [])
   
+  useEffect(() => {
+    console.log(ricette)
+  }, [ricette])
+  
+  
 
   return (
     <div className="container my-5">
@@ -62,7 +67,7 @@ const RicetteWindow = () => {
                   <ul>
                     {ricetta.garnishes.map((garnish, garnishIndex) => (
                       <li key={garnishIndex}>
-                        {garnish.guarnizioneName || garnish.guarnizioneId} - {garnish.quantity} {garnish.um}
+                        {garnish.guarnizione.name || garnish.guarnizioneId} - {garnish.quantity} {garnish.um}
                       </li>
                     ))}
                   </ul>
