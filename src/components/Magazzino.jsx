@@ -3,8 +3,7 @@ import ResumeGin from './magazzino/resumeSubcomponents/ResumeGin';
 import ResumeTonica from './magazzino/resumeSubcomponents/ResumeTonica';
 import ResumeExtra from './magazzino/resumeSubcomponents/ResumeExtra';
 import ResumeGarnish from './magazzino/resumeSubcomponents/ResumeGarnish';
-import { Table } from 'react-bootstrap';
-
+import { Table, Button } from 'react-bootstrap';
 const Magazzino = function () {
     const [magazzinoCorrente, setMagazzinoCorrente] = useState([]);
 
@@ -27,9 +26,14 @@ const Magazzino = function () {
             const data = await response.json();
             setMagazzinoCorrente(data);
         }
-    };
+    }
+
+    const reportMagazzino = () => {
+
+    }
 
     return (
+        <>
         <Table striped bordered hover>
             <thead>
                 <tr>
@@ -51,6 +55,11 @@ const Magazzino = function () {
                 ))}
             </tbody>
         </Table>
+        {/* <div className="m-3">
+        <Button onClick={fetchMagazzino}>Aggiorna</Button>
+        <Button onClick={reportMagazzino}>Report</Button>
+        </div> */}
+                </>
     );
 }
 

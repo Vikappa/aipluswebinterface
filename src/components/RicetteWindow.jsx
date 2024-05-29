@@ -67,7 +67,7 @@ const RicetteWindow = () => {
                   <ul>
                     {ricetta.garnishes.map((garnish, garnishIndex) => (
                       <li key={garnishIndex}>
-                        {garnish.guarnizione.name || garnish.guarnizioneId} - {garnish.quantity} {garnish.um}
+                        {garnish.guarnizioneName || garnish.guarnizioneId} - {garnish.quantity} {garnish.um}
                       </li>
                     ))}
                   </ul>

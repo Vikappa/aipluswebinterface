@@ -35,11 +35,12 @@ function Ordina(props) {
     if (ginBrands && ginTonicDaInviare) {
       const extrasPrice = ginTonicDaInviare.extras.length * 0.5;
       const garnishesPrice = ginTonicDaInviare.garnishes.length * 0.25;
-      const selectedGinBrand = ginBrands.find(brand => brand.name === ginTonicDaInviare.ginBottleBrandName) 
-      const brandSurcharge = selectedGinBrand ? selectedGinBrand.sovrapprezzo : ginBrands[0].sovrapprezzo
-      setPrezzoTotale(base_price + extrasPrice + garnishesPrice + brandSurcharge);
+      const selectedGinBrand = ginBrands.find(brand => brand.name === ginTonicDaInviare.ginBottleBrandName);
+      const brandSurcharge = selectedGinBrand ? selectedGinBrand.sovrapprezzo : 0;
+      setPrezzoTotale(7 + extrasPrice + garnishesPrice + brandSurcharge);
     }
   };
+
 
   useEffect(() => {
     dispatch(fetchGinBrands());
@@ -113,7 +114,7 @@ function Ordina(props) {
     }
 
     const responseData = await response.json();
-    handleClose();
+    handleClose()
     navigator('/')
 
   }
