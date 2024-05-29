@@ -7,8 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchGinBrands } from '../../redux/reducers/ginBrandsReducer';
 import { fetchGinBottleShortLine, fetchTonicaBottleShortLine } from '../../redux/reducers/wharehouseReducers';
 import { resetGinTonic, setGinBottleBrandName, setGinBottleName, setGinFlavourName, setTonicaBrand, setTonicaFlavour, setTonicaName } from '../../redux/reducers/newGinTonicReducer';
+import { useNavigate } from 'react-router-dom';
 
 function Ordina(props) {
+
+  const navigator = useNavigate();
 
   const setShow = (boolean) => {
     props.showController(boolean);
@@ -29,7 +32,7 @@ function Ordina(props) {
   const [prezzoTotale, setPrezzoTotale] = useState(base_price);
 
   const updateBasePrice = () => {
-    if (ginBrands) {
+    if (ginBrands && ginTonicDaInviare) {
       const extrasPrice = ginTonicDaInviare.extras.length * 0.5;
       const garnishesPrice = ginTonicDaInviare.garnishes.length * 0.25;
       const selectedGinBrand = ginBrands.find(brand => brand.name === ginTonicDaInviare.ginBottleBrandName) 
@@ -111,7 +114,8 @@ function Ordina(props) {
 
     const responseData = await response.json();
     handleClose();
-    console.log(responseData);
+    navigator('/')
+
   }
 
   return (
