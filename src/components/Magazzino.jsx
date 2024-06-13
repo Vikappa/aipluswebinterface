@@ -14,7 +14,7 @@ const Magazzino = function () {
     }, []);
 
     const fetchMagazzino = async function () {
-        const response = await fetch("https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/magazzino/resume", {
+        const response = await fetch("http://localhost:3001/magazzino/resume", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

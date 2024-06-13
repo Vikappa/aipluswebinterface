@@ -77,7 +77,7 @@ const RowDeperibileCarico = function() {
     };
 
     const handleFlavourModalSubmit = async () => {
-        const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/flavours/add', {
+        const response = await fetch('localhost:3001/flavours/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

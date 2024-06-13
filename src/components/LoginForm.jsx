@@ -10,7 +10,7 @@ const LoginForm = function () {
 
     const customerLogin = async (tavnum) => {
         try {
-            const response = await fetch(`https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/customer/createcustomer`, {
+            const response = await fetch(`http://localhost:3001/customer/createcustomer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ const LoginForm = function () {
     const fetchLogin = async () => {
 
                 try {
-            const response = await fetch(`https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/login`, {
+                const response = await fetch(`http://localhost:3001/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

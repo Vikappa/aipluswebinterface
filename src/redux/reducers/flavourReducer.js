@@ -8,7 +8,7 @@ export const fetchFlavours = createAsyncThunk(
     "flavours/getall",
     async () => {
         const token = sessionStorage.getItem("token")
-        const response = await fetch("https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/flavours/getall", {
+        const response = await fetch("http://localhost:3001/flavours/getall", {
             method: 'GET', 
             headers: {
                 'Content-Type': 'application/json',

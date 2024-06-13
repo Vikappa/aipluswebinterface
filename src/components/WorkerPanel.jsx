@@ -29,7 +29,7 @@ const WorkerPanel = function() {
 
     const updateOrdineStatus = async (ordineId) => {
         const response = await fetch(
-            `https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ordina/preparato`,
+            `http://localhost:3001/ordina/preparato`,
             {
                 method: "POST",
                 headers: {

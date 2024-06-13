@@ -66,7 +66,7 @@ const CaricoWindow = function() {
     
     const fetchNCarico = async () => {
         try{
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/carichi/getlastcarico', {
+            const response = await fetch('localhost:3001/carichi/getlastcarico', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const CaricoWindow = function() {
     const fetchUser = async () => {
 
         try {
-            const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/users/profile', {
+            const response = await fetch('localhost:3001/users/profile', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ const CaricoWindow = function() {
     }, [])
 
     const sendCarico = async function(){
-        const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/carichi', {
+        const response = await fetch('localhost:3001/carichi', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

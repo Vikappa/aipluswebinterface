@@ -29,7 +29,7 @@ const AddRicettaForm = () => {
 
   const addRicetta = async function(){
     console.log(newRicetta)
-    const response = await fetch("https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ricette/add", {
+    const response = await fetch("http://localhost:3001/ricette/add", {
       method: 'POST', 
       headers: {
           'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ const AddRicettaForm = () => {
 
   const handleGinFlavourModalSubmit = async () => {
     try {
-      const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/ginflavours/add', {
+      const response = await fetch('http://localhost:3001/ginflavours/add', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
@@ -204,7 +204,7 @@ const AddRicettaForm = () => {
   };
 
   const handleFlavourModalSubmit = async () => {
-    const response = await fetch('https://aipluswebserver-vincenzocostantini-082c8784.koyeb.app/flavours/add', {
+    const response = await fetch('http://localhost:3001/flavours/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
