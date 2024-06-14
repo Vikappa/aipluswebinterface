@@ -2,11 +2,16 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Row, Col } from 'react-bootstrap';
+import SpinnerRelogCustomer from '../Spinners/SpinnerRelogCustomer'
+import { set } from 'date-fns';
+import UserLoginFailed from '../Spinners/UserLoginFailed';
 
 const LoginForm = function () {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [isLoadingLoginTop, setIsLoadingLoginTop] = useState(false);
+    const [userloginFailed, setUserloginFailed] = useState(false);
 
     const customerLogin = async (tavnum) => {
         try {
@@ -36,8 +41,8 @@ const LoginForm = function () {
     };
 
     const fetchLogin = async () => {
-
                 try {
+                    setIsLoadingLoginTop(true)
                 const response = await fetch(`http://localhost:3001/login`, {
                 method: 'POST',
                 headers: {
@@ -51,6 +56,10 @@ const LoginForm = function () {
 
             if (!response.ok) {
                 console.error('Login request failed:', response.statusText);
+                if(response.status === 404){
+                    setIsLoadingLoginTop(false)
+                    setUserloginFailed(true)
+                }
                 return;
             }
 
@@ -84,14 +93,20 @@ const LoginForm = function () {
 
     return (
         <>
-            <Form onSubmit={handleSubmit}>
+            {
+                !isLoadingLoginTop?
+                userloginFailed?
+               <UserLoginFailed userloginFailed={userloginFailed} setUserloginFailed={setUserloginFailed} />
+                :
+                (
+                <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Indirizzo email</Form.Label>
                     <Form.Control
                         type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                value={email}
+            onChange={(e) => setEmail(e.target.value)}
                     />
                     <Form.Text className="text-muted">
                         Inserisci l&apos;email fornita in fase di registrazione
@@ -102,16 +117,24 @@ const LoginForm = function () {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
+                    placeholder="Password"
+                value={password}
+            onChange={(e) => setPassword(e.target.value)}
+        />
                 </Form.Group>
 
                 <Button variant="primary" type="submit">
                     Login
                 </Button>
-            </Form>
+                </Form>
+                ) :
+                (
+                <div className="m-2 p-5 d-flex justify-content-center w-100" role="status">
+                    <SpinnerRelogCustomer/>
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+                )
+        }
             <Container className="mt-4">
                 <Row className="gy-2">
                     <Col xs={12} sm={6} md={4} lg={2}>
