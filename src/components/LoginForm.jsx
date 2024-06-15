@@ -41,9 +41,15 @@ const LoginForm = function () {
     };
 
     const fetchLogin = async () => {
-                try {
-                    setIsLoadingLoginTop(true)
-                const response = await fetch(`http://localhost:3001/login`, {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+        }, 10000); // 10 secondi di timeout
+    
+        try {
+            setIsLoadingLoginTop(true);
+    
+            const response = await fetch(`http://localhost:3001/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,38 +57,46 @@ const LoginForm = function () {
                 body: JSON.stringify({
                     email: email,
                     password: password
-                })
+                }),
+                signal: controller.signal 
             });
-
+    
+            clearTimeout(timeoutId); 
+    
             if (!response.ok) {
                 console.error('Login request failed:', response.statusText);
-                if(response.status === 404){
-                    setIsLoadingLoginTop(false)
-                    setUserloginFailed(true)
-                }
+                setIsLoadingLoginTop(false);
+                setUserloginFailed(true);
                 return;
             }
-
+    
             const data = await response.json();
             console.log('Login data:', data);
-
+    
             sessionStorage.setItem("token", data.accessToken);
-
+    
             if (data.role === "ADMIN") {
                 navigate('/admin');
             } else if (data.role === "BARMAN") {
                 navigate('/workerpanel');
             }
-
+    
         } catch (error) {
-            console.error('An error occurred:', error);
+            if (error.name === 'AbortError') {
+                console.error('Login request timed out');
+            } else {
+                console.error('An error occurred:', error);
+            }
+            setIsLoadingLoginTop(false);
+            setUserloginFailed(true);
         }
     };
-
+    
     const handleSubmit = (e) => {
         e.preventDefault();
         fetchLogin();
     };
+    
 
     const customer1 = () => customerLogin(1);
     const customer2 = () => customerLogin(2);
@@ -99,7 +113,7 @@ const LoginForm = function () {
                <UserLoginFailed userloginFailed={userloginFailed} setUserloginFailed={setUserloginFailed} />
                 :
                 (
-                <Form onSubmit={handleSubmit}>
+                <Form className='p-1' onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Indirizzo email</Form.Label>
                     <Form.Control
