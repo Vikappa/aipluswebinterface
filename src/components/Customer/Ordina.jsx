@@ -98,7 +98,7 @@ function Ordina(props) {
   }
 
   const postGinTonic = async (data) => {
-    const response = await fetch('localhost:3001/ordina/ordina', {
+    const response = await fetch('http://localhost:3001/ordina/ordina', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
