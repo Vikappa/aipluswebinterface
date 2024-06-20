@@ -9,6 +9,7 @@ const Magazzino = function () {
 
     const [magazzinoCorrente, setMagazzinoCorrente] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [showModal2, setShowModal2] = useState(false);
 
     const handleShowModal = () => {
         setShowModal(!showModal)
@@ -34,9 +35,10 @@ const Magazzino = function () {
             setMagazzinoCorrente(data);
         }
     }
-    
 
-
+    const handleShowModal2 = () => {
+        setShowModal2(true)
+    }
 
     return (
         <>
@@ -62,8 +64,13 @@ const Magazzino = function () {
             </tbody>
         </Table>
 
-        <Button onClick={handleShowModal}>Report</Button>
+        <div className="d-flex p-2 gap-2 ">
 
+        <Button onClick={handleShowModal}>Report magazzino corrente</Button>
+
+        <Button onClick={handleShowModal2}>Report carichi magazzino</Button>
+
+        </div>
         { showModal &&
         <ModalReportMagazzino show={showModal} handleShowModal={handleShowModal} />
         } 

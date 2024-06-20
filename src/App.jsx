@@ -12,7 +12,6 @@ import RicetteWindow from './components/RicetteWindow'
 import CustomerPanel from './components/Customer/CustomerPanel'
 import CustomerNavBar from "./components/Customer/CustomerNavBar"
 import UsersWindows from './components/UsersWindow';
-import ReportMagazzinoTotalePDF from './components/magazzino/subcomponents/ReportMagazzinoTotalePDF';
 
 function App() {
 
@@ -30,7 +29,6 @@ function App() {
         <Route path='/admin/carico' element={<CaricoWindow />} />
         <Route path='/admin/ginbrands' element={<GinBrandsWindow />} />
         <Route path='/admin/magazzino' element={<Magazzino />} />
-        <Route target="_blank" path='/admin/reporttotalecorrente' element={<ReportMagazzinoTotalePDF/>}/>
         <Route path='/admin/ricette' element={<RicetteWindow />} />
         <Route path='/admin/utenti' element={<UsersWindows />} />
         <Route path='/workerpanel' element={<WorkerPanel />} />
