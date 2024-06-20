@@ -4,8 +4,15 @@ import ResumeTonica from './magazzino/resumeSubcomponents/ResumeTonica';
 import ResumeExtra from './magazzino/resumeSubcomponents/ResumeExtra';
 import ResumeGarnish from './magazzino/resumeSubcomponents/ResumeGarnish';
 import { Table, Button } from 'react-bootstrap';
+import ModalReportMagazzino from "./magazzino/subcomponents/ModalReportMagazzino";
 const Magazzino = function () {
+
     const [magazzinoCorrente, setMagazzinoCorrente] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+
+    const handleShowModal = () => {
+        setShowModal(!showModal)
+    }
 
     useEffect(() => {
         if (magazzinoCorrente.length === 0) {
@@ -24,15 +31,12 @@ const Magazzino = function () {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data)
             setMagazzinoCorrente(data);
         }
     }
     
 
-    const reportMagazzino = () => {
 
-    }
 
     return (
         <>
@@ -57,11 +61,14 @@ const Magazzino = function () {
                 ))}
             </tbody>
         </Table>
-        {/* <div className="m-3">
-        <Button onClick={fetchMagazzino}>Aggiorna</Button>
-        <Button onClick={reportMagazzino}>Report</Button>
-        </div> */}
-                </>
+
+        <Button onClick={handleShowModal}>Report</Button>
+
+        { showModal &&
+        <ModalReportMagazzino show={showModal} handleShowModal={handleShowModal} />
+        } 
+            
+        </>
     );
 }
 
