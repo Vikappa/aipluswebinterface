@@ -200,7 +200,7 @@ const ModalReportMagazzino = function (props) {
             setIsError(true);
             setTimeout(() => {
                 props.handleShowModal();
-            }, 1000);
+            }, 2000);
         }
     };
 
@@ -238,7 +238,7 @@ const ModalReportMagazzino = function (props) {
                 }
             </Modal.Body>
             <Modal.Footer>
-                <Button onClick={props.handleShowModal}>Close</Button>
+                <Button onClick={props.handleShowModal}>Chiudi</Button>
             </Modal.Footer>
         </Modal>
     )

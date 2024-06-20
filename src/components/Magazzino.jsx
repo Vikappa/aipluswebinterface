@@ -5,6 +5,7 @@ import ResumeExtra from './magazzino/resumeSubcomponents/ResumeExtra';
 import ResumeGarnish from './magazzino/resumeSubcomponents/ResumeGarnish';
 import { Table, Button } from 'react-bootstrap';
 import ModalReportMagazzino from "./magazzino/subcomponents/ModalReportMagazzino";
+import ModalReportCarichi from "./magazzino/subcomponents/ModalReportCarichi";
 const Magazzino = function () {
 
     const [magazzinoCorrente, setMagazzinoCorrente] = useState([]);
@@ -37,11 +38,20 @@ const Magazzino = function () {
     }
 
     const handleShowModal2 = () => {
-        setShowModal2(true)
+        setShowModal2(!showModal2)
     }
 
     return (
         <>
+        
+        <div className="d-flex p-2 gap-2 ">
+
+        <Button onClick={handleShowModal}>Report magazzino corrente</Button>
+
+        <Button onClick={handleShowModal2}>Report carichi magazzino</Button>
+
+        </div>
+        
         <Table striped bordered hover>
             <thead>
                 <tr>
@@ -64,17 +74,13 @@ const Magazzino = function () {
             </tbody>
         </Table>
 
-        <div className="d-flex p-2 gap-2 ">
-
-        <Button onClick={handleShowModal}>Report magazzino corrente</Button>
-
-        <Button onClick={handleShowModal2}>Report carichi magazzino</Button>
-
-        </div>
         { showModal &&
         <ModalReportMagazzino show={showModal} handleShowModal={handleShowModal} />
         } 
-            
+        
+        { showModal2 &&
+        <ModalReportCarichi show={showModal2} handleShowModal={handleShowModal2} />
+        }
         </>
     );
 }
