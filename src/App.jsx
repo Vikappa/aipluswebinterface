@@ -1,3 +1,4 @@
+import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom'
 import AdminPage from './components/AdminPage'
 import LoginForm from './components/LoginForm'
@@ -10,30 +11,37 @@ import Magazzino from './components/Magazzino'
 import RicetteWindow from './components/RicetteWindow'
 import CustomerPanel from './components/Customer/CustomerPanel'
 import CustomerNavBar from "./components/Customer/CustomerNavBar"
+import UsersWindows from './components/UsersWindow';
+import ReportMagazzinoTotalePDF from './components/magazzino/subcomponents/ReportMagazzinoTotalePDF';
 
 function App() {
 
   const location = useLocation();
 
 
-  return (<div>
-      {location.pathname !== '/customer' && <NavBarAipiu/>}
-      {location.pathname === '/customer' && <CustomerNavBar/>}
+  return (
+    <div>
+      {location.pathname !== '/customer' && <NavBarAipiu />}
+      {location.pathname === '/customer' && <CustomerNavBar />}
 
-    <Routes>
-      <Route path='/' element={<LoginForm/>} />
-      <Route path='/admin' element={<AdminPage/>} />
-      <Route path='/admin/carico' element={<CaricoWindow/>} />
-      <Route path='/admin/ginbrands' element={<GinBrandsWindow/>} />
-      <Route path='/admin/magazzino' element={<Magazzino/>} />
-      <Route path='/admin/ricette' element={<RicetteWindow/>} />
-      <Route path='/workerpanel' element={<WorkerPanel/>} />
-      <Route path='/customer' element={<CustomerPanel/>} />
-    </Routes>
+      <Routes>
+        <Route path='/' element={<LoginForm />} />
+        <Route path='/admin' element={<AdminPage />} />
+        <Route path='/admin/carico' element={<CaricoWindow />} />
+        <Route path='/admin/ginbrands' element={<GinBrandsWindow />} />
+        <Route path='/admin/magazzino' element={<Magazzino />} />
+        <Route target="_blank" path='/admin/reporttotalecorrente' element={<ReportMagazzinoTotalePDF/>}/>
+        <Route path='/admin/ricette' element={<RicetteWindow />} />
+        <Route path='/admin/utenti' element={<UsersWindows />} />
+        <Route path='/workerpanel' element={<WorkerPanel />} />
+        <Route path='/customer' element={<CustomerPanel />} />
+      </Routes>
 
-  </div>
+    </div>
   )
 }
 
 export default App
+
+
 
