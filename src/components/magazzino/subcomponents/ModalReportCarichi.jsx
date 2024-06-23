@@ -6,6 +6,10 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { defaultSerializeQueryArgs } from "@reduxjs/toolkit/query";
 
 const ModalReportCarichi = function (props) {
     const [isLoading, setIsLoading] = useState(true);
@@ -21,11 +25,55 @@ const ModalReportCarichi = function (props) {
     const [filterProductType, setFilterProductType] = useState('');
 
     const downloadOrderDetailExcel = () => {
-        // Implementa la funzione di download Excel
+        if (!selectedOrder) return;
+
+        const worksheet = XLSX.utils.json_to_sheet(selectedOrder.prodotti);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Prodotti');
+
+        XLSX.writeFile(workbook, `Ordine_${selectedOrder.ncarico}.xlsx`);
     };
 
     const downloadOrderDetailPDF = () => {
-        // Implementa la funzione di download PDF
+        if (!selectedOrder) return;
+
+        const doc = new jsPDF();
+
+        doc.text(`Dettagli Carico N° ${selectedOrder.ncarico}`, 20, 10);
+        doc.text(`Operatore: ${selectedOrder.operatore.name} ${selectedOrder.operatore.surname}`, 20, 20);
+        doc.text(`Prodotti: ${selectedOrder.prodotti.length}`, 20, 30);
+        doc.text(`Data: ${selectedOrder.data}`, 20, 40);
+        doc.text(`Note: ${selectedOrder.note}`, 20, 50);
+
+        const tableColumn = [
+            "ID Magazzino",
+            "Nome",
+            "Marca",
+            "Data di Produzione",
+            "Quantità",
+            "Scadenza",
+            "Flavour",
+            "Colore",
+        ];
+
+        const tableRows = [];
+
+        selectedOrder.prodotti.forEach(prodotto => {
+            const rowData = [
+                prodotto.id || "",
+                prodotto.name || "",
+                prodotto.brand?.name || prodotto.brandTonica?.name || "",
+                prodotto.productionDate || "",
+                prodotto.volume ? `${prodotto.volume} ${prodotto.um}` : prodotto.quantitaGarnish ? `${prodotto.quantitaGarnish} ${prodotto.um}` : prodotto.qtaExtra ? `${prodotto.qtaExtra} ${prodotto.um}` : "",
+                prodotto.scadenza_tonica || prodotto.scadenza_ingrediente || "",
+                prodotto.flavour?.name || "",
+                prodotto.colore?.name || "",
+            ];
+            tableRows.push(rowData);
+        });
+
+        doc.autoTable(tableColumn, tableRows, { startY: 60 });
+        doc.save(`Ordine_${selectedOrder.ncarico}.pdf`);
     };
 
     const reportCarichi = async () => {
@@ -39,7 +87,6 @@ const ModalReportCarichi = function (props) {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
                 setArrayOrdini(data);
                 setFilteredOrdini(data);
                 setIsLoading(false);
@@ -85,11 +132,50 @@ const ModalReportCarichi = function (props) {
         }
 
         if (filterProductType) {
-            filtered = filtered.filter(order => order.prodotti.some(prodotto => prodotto.name.includes(filterProductType)));
-        }
+            console.log(filtered)
+            console.log(filterProductType)
+            filtered = filtered.filter(order => 
+                order.prodotti.some(product => isFilteredProductType(product)))       
+             }
 
         setFilteredOrdini(filtered);
     };
+
+    const isFilteredProductType = (product) => {
+        console.log(product)
+        switch (filterProductType) {
+            case "Gin":
+                if(product.alcoholPercentage !== undefined) {
+                    return true
+                }
+                    else {
+                        return false;
+                    }
+            case "Tonica":
+                if(product.alcoholPercentage !== undefined) {
+                    return true
+                }
+                    else {
+                        return false;
+                    }
+            case "Alimento":
+                if(product.qtaExtra !== undefined) {
+                    return true
+                }
+                    else {
+                        return false;
+                    }            
+            case "Guarnizione":
+                if(product.quantitaGarnish !== undefined) {
+                    return true
+                }
+                    else {
+                        return false;
+                    }            
+            default:
+            return false;
+        }
+    }
 
     useEffect(() => {
         handleFilterChange();
@@ -251,8 +337,8 @@ const ModalReportCarichi = function (props) {
                                     </Form.Group>
                                 </Col>
                             </Row>
-                            <ListGroup>
-                                {filteredOrdini.map((ordine, index) => (
+                            <ListGroup style={{maxHeight:"40vh", overflowY:"scroll"}}>
+                                {filteredOrdini.reverse().map((ordine, index) => (
                                     <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
                                         <div><strong>Carico N°:</strong> {ordine.ncarico}</div>
                                         <div><strong>Operatore:</strong> {ordine.operatore.name + " " + ordine.operatore.surname}</div>
